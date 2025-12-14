@@ -1,0 +1,13 @@
+TIKI
+setup
+{
+}
+
+init
+{
+server
+{
+setsize "0"
+classname InventoryItem
+}
+}

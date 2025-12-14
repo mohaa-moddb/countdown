@@ -1,0 +1,162 @@
+// SNOWY PARK
+// ARCHITECTURE: NED
+// SCRIPTING: NED
+
+// **********************************************************************
+// Extended-Gametype Mapscript Version 1.2.1 (05-14-05)
+// By Mark Follett (Mefy)
+// email: mef123@geocities.com
+// web: www.planetmedalofhonor.com/mefy
+// You are free to modify and redistribute as long as you keep these
+// credits.
+// **********************************************************************
+
+main:
+
+// set scoreboard messages
+
+
+
+setcvar "g_scoreboardpic" "mohdm5"
+
+	switch (waitthread global/libmef/util.scr::get_gametype)
+	{
+		case "ctf":
+		case "ftctf":
+		case "dem":
+		case "ftdem":
+			waitthread setup_bases
+			break
+	}
+
+	level waitTill prespawn
+
+	//*** Precache Dm Stuff
+	exec global/DMprecache.scr
+
+	level.script = maps/dm/mohdm5.scr
+	exec global/ambient.scr mohdm5
+
+	level waittill spawn
+	thread EnlightModThread
+	if (level.mef_baseversion == "sh" || level.mef_baseversion == "bt")
+	{
+		$world commanddelay 0 farclipoverride -1
+	}
+
+
+snow:
+	wait 1
+
+	level.rain_speed = "32"
+	level.rain_speed_vary = "16"
+	level.rain_length = "2"
+	level.rain_width = "1"
+	level.rain_density = ".2"
+	level.rain_slant = "250"
+	level.rain_min_dist = "1800"
+	//level.rain_min_dist = "512"
+	level.rain_numshaders = 12
+	if (level.mef_baseversion == "sh" || level.mef_baseversion == "bt")
+	{
+		level.rain_shader = "textures/snow"
+	} else
+	{
+		level.rain_shader = "textures/snow0"
+	}
+
+
+//Dead soldier tower
+        local.dresser = spawn script_model
+	local.dresser model "static/body_usvest04.tik"
+	local.dresser.origin = (3425 -2993 520)
+	local.dresser.angles = (0 93 0 )
+	local.dresser notsolid
+	local.dresser droptofloor
+
+	local.fire = spawn script_model
+	local.fire model "emitters/fireandsmoke.tik"
+	local.fire.origin = (3425 -2993 520)
+	local.fire.angles = (0 133 0)
+	local.fire notsolid
+	local.fire droptofloor
+	local.fire.targetname = "myfire1"
+	local.fire thread firehurts
+
+	//GMC Truck
+        //local.gmc = spawn script_object 
+	//local.gmc model "vehicles/gmctruck.tik"
+	local.opel = spawn script_model model "vehicles/opeltruck.tik"
+	local.opel.origin = (3705 -4710 170)
+	local.opel.angles = (0 173 0)
+	local.opel nodamage
+	local.opel solid
+	local.opel droptofloor
+	local.opel immune explosion
+	local.opel immune bash
+	local.opel anim lightson
+	local.opel anim stop_wheels
+	local.opel anim color_snow
+
+
+
+
+
+
+	
+
+end
+
+//-----------------------------------------------------------------------------
+
+
+
+setup_bases:
+	// common bases for dem and ctf
+	waitthread global/libmef/bases.scr::addbasepair "3055 -2771 157.63 -150 NW: Campfire" "-21.98 -6174.91 112.13 -68 SE: Mobile Nebelwerfer" fire sdkfznebel
+	waitthread global/libmef/bases.scr::addbasepair "3709 -4743 112.13 180 N: Allied Tent" "176 -4876 112.13 4 S: V2 Rocket" tent v2rocket
+	waitthread global/libmef/bases.scr::addbasepair "4289 -5910 156.04 0 NE: Jeep" "-284.23 -3464.04 155.38 -15 SW: Motorcycle" jeep bmwbike NIL ( 5 345 359 )
+	waitthread global/libmef/bases.scr::addbasepair "2232 -6528 112.13 180 East Bridge" "887 -2778 112.13 0 West Bridge" indycrate indycrate
+
+	// additional bases for ctf only
+	if (level.mef_gametype == "ctf" || level.mef_gametype == "ftctf")
+	{
+		// north/south
+		waitthread global/libmef/bases.scr::addbasepair "4244 -4932 154.07 165" "-383 -4701 136.41 -70"
+
+		// northwest/southeast
+		waitthread global/libmef/bases.scr::addbasepair "3414 -3474 162.05 -150" "-242 -6230 168.83 15"
+
+		// northeast/southwest
+		waitthread global/libmef/bases.scr::addbasepair "4036 -6520 154.15 91" "-623 -3349 170.14 -40"
+	}		
+end
+//**********************MODS*****************************
+EnlightModThread:
+while (1)
+{
+	wait .2                                                                          // Infinite Loop Error Removal
+	for (local.i = 1; local.i < ($player.size + 1); local.i++)
+	{
+		local.player = $player[local.i]
+		if (local.player != NIL && local.player.dmteam != "spectator")
+		{
+			if ( getcvar (g_gametype) == "1")
+					local.player light 0 0 1 150                            // Free For All, All Players Blue
+			else
+			{
+				if (local.player.dmteam == "allies")
+						local.player light 0 1 1 150                        // Allies light green
+				else
+						local.player light 1 0 0 150                        // Nazi Flag is Red, so axis are too
+			}
+
+		}
+		else
+		{
+			local.player light 0 0 0 0		
+		}
+		// Possible glitch: selecting team but not weapon = Spectator with Spotlight
+	}
+}
+end

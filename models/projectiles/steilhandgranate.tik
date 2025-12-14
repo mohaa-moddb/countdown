@@ -1,0 +1,21 @@
+// The is the steilhandgranate used for secondary fire for player only.  
+// AI now uses steilhandgranate_ai version..
+//
+TIKI
+
+$include models/projectiles/steilhandgranate_base.txt
+
+init
+{
+	server
+	{
+		speed			600    //was at 700
+		minspeed		100
+		minlife			0.6
+
+//	cooking--> secondary fire now just drops it at your feet.
+//	jsl--> took drop to your feet out...
+//		speed			10
+//		minspeed		10
+	}
+}

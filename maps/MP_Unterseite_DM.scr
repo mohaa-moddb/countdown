@@ -1,0 +1,79 @@
+// Unterseite 
+
+// **********************************************************************
+// Extended-Gametype Mapscript Version 1.2.1 (05-14-05)
+// By Mark Follett (Mefy)
+// email: mef123@geocities.com
+// web: www.planetmedalofhonor.com/mefy
+// You are free to modify and redistribute as long as you keep these
+// credits.
+// **********************************************************************
+// Credits to Kaotik for base positions
+
+main:
+
+
+
+	switch (waitthread global/libmef/util.scr::get_gametype)
+	{
+		case "ctf":
+		case "ftctf":
+		case "dem":
+		case "ftdem":
+			waitthread setup_bases
+			break
+	}
+		
+	level waitTill prespawn
+		$world farplane_bias 1000
+		exec global/DMprecache.scr
+		exec global/door_locked.scr
+
+		level.script = "maps/dm/mp_unterseite_dm.scr"
+		level.music = mp_unterseite_dm		
+		exec global/ambient.scr 
+
+	level waittill spawn
+	thread EnlightModThread
+	waitframe
+	$world farplaneclipcolor "0.5 0.43 0.55"
+
+end
+
+
+setup_bases:
+	// Base positions by Kaotik
+	waitthread global/libmef/bases.scr::addbasepair "1039.13 1283.81 186.97 0 Yard" "-906.52 1875.13 -191.88 90 Bunker"
+end
+
+
+//-----------------------------------------------------------------------------
+//**********************MODS*****************************
+EnlightModThread:
+while (1)
+{
+	wait .2                                                                          // Infinite Loop Error Removal
+	for (local.i = 1; local.i < ($player.size + 1); local.i++)
+	{
+		local.player = $player[local.i]
+		if (local.player != NIL && local.player.dmteam != "spectator")
+		{
+			if ( getcvar (g_gametype) == "1")
+					local.player light 0 0 1 150                            // Free For All, All Players Blue
+			else
+			{
+				if (local.player.dmteam == "allies")
+						local.player light 0 1 1 150                        // Allies light green
+				else
+						local.player light 1 0 0 150                        // Nazi Flag is Red, so axis are too
+			}
+
+		}
+		else
+		{
+			local.player light 0 0 0 0		
+		}
+		// Possible glitch: selecting team but not weapon = Spectator with Spotlight
+	}
+}
+end

@@ -1,0 +1,808 @@
+// Bazaar
+
+main:
+level.script = "maps/dm/MP_Bazaar_DM.scr"
+level.music = "MP_Bazaar_DM"
+
+// set scoreboard messages
+
+
+setcvar "g_scoreboardpic" "MP_Bazaar_DM"
+
+	switch (waitthread global/libmef/util.scr::get_gametype)
+	{
+		case "ctf":
+		case "ftctf":
+		case "dem":
+		case "ftdem":
+			waitthread setup_bases
+			break
+	}
+
+exec global/DMprecache.scr
+
+//new spawnpoint
+local.ffa_spawnspot = spawn info_player_deathmatch "origin" " -738 796 224" "angle" " -90"
+
+level waitTill prespawn
+exec global/ambient.scr
+$world farclipoverride 4000
+$world farplaneclipcolor "0.9 0.9 0.7"
+
+//-----------------------------------------------------------------------------
+
+
+////////////////////////////
+//  Bazaar map mod by Lamron  
+////////////////////////////
+
+thread addcrate
+thread usable
+thread L_walk
+thread walkway
+thread boomcrate
+thread teleport1
+thread courtyard
+thread lift_switch
+thread killstoppers
+thread rooftop
+thread tripwire1
+thread tripwire2
+thread door
+thread burnme
+thread EnlightModThread
+
+end
+//////////
+setup_bases:
+////////// Base positions by Kaotik
+	waitthread global/libmef/bases.scr::addbasepair "368.87 -0.03 160.13 180 Allied Balcony" "752.87 1217.90 256.13 180 Axis Balcony"
+end
+
+
+/////////
+addcrate:
+
+    //////////////////
+  //  rooftop cover   //
+//////////////////
+
+ local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -503 795 224)
+ local.crate nodamage
+ local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -503 795 271)
+ local.crate nodamage
+ local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -503 727 224)
+ local.crate nodamage
+ local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -503 727 271)
+ local.crate nodamage
+ local.crate = spawn script_model "model" "models/static/sandbag_link_main.tik" "origin" ( -497 689 224)
+ local.crate nodamage
+ local.sand = spawn script_model "model" "models/static/sandbag_link_main.tik" "origin" ( -497 585 224)
+ local.sand nodamage
+ local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -503 514 224)
+ local.crate nodamage
+ local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -503 514 271)
+ local.crate nodamage
+ local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -525 448 224) "angles" (0 -45 0)  
+ local.crate nodamage
+ local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -575 398 224) "angles" (0 -45 0)  
+ local.crate nodamage
+ local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -641 377 224) "angles" (0 90 0)  
+ local.crate nodamage
+ local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -641 377 271) "angles" (0 90 0)  
+ local.crate nodamage
+ local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -712 377 224) "angles" (0 90 0)  
+ local.crate nodamage
+ local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -783 377 271) "angles" (0 90 0)  
+ local.crate nodamage
+ local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -783 377 224) "angles" (0 90 0)  
+ local.crate nodamage
+
+for (local.sand = 224; local.sand < 332; local.sand += 36)
+       {local.sandbags = spawn script_model "model" "static/sandbag_longsegment.tik" 
+       local.sandbags.origin = ( -918 610 local.sand )} 
+
+local.object = spawn script_model "model" "models/static/sandbag_longsegment.tik"
+local.object.origin = ( -1810 594 224)
+local.object.scale = 2
+
+ local.clipbrush = spawn script_object
+ local.clipbrush.origin = ( -905 325 328 )
+ local.clipbrush setsize ( -25 0 0 ) ( 25 500 100 )
+ local.clipbrush solid
+
+    ////////////////
+  //  roof stairs    //
+////////////////
+local.EW = 1905
+for (local.UD = -63; local.UD < 172; local.UD += 47)
+       {local.crate = spawn script_model "model" "models/static/indycrate.tik"
+       local.crate.origin = ( -300 local.EW local.UD)
+       local.EW = (local.EW - 35)}
+
+    ////////////////////
+  //  rooftop cover 2    //
+////////////////////
+
+ local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -348 1528 190) "angles" (0 90 0)  
+ local.crate nodamage
+ local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -348 1528 237) "angles" (0 90 0)  
+ local.crate nodamage
+ local.sand = spawn script_model "model" "models/static/sandbag_link_main.tik" "origin" ( -265 1525 190) "angles" ( 0 90 0)
+ local.sand nodamage
+ local.sand = spawn script_model "model" "models/static/sandbag_link_main.tik" "origin" ( -161 1525 190) "angles" ( 0 90 0)
+ local.sand nodamage
+
+    ////////////////////////
+  //        Snipers's Nest      //  
+////////////////////////  
+for (local.sand = 384; local.sand < 492; local.sand += 36)
+       {local.sandbags = spawn script_model "model" "static/sandbag_longsegment.tik" 
+       local.sandbags.origin = ( 1625 950 local.sand )
+       local.sandbags.angles = (0 215 0)} 
+
+for (local.sand = 384; local.sand < 492; local.sand += 36)
+       {local.sandbags = spawn script_model "model" "static/sandbag_longsegment.tik" 
+       local.sandbags.origin = ( 1700 750 local.sand )
+       local.sandbags.angles = (0 180 0)} 
+
+for (local.box = 681; local.box < 1107; local.box += 142)
+       {local.crateA = spawn script_model "model" "models/static/indycrate.tik"
+       local.crateA.origin = ( 1497 local.box 384 )
+       local.crateA nodamage
+       local.crateB = spawn script_model "model" "models/static/indycrate.tik"
+       local.crateB.origin = ( 1497 local.box 431 )
+       local.crateB nodamage}
+
+//floating MG42
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " 1185 610 240" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " 1185 610 287" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " 1232 610 240" 
+local.object nodamage
+
+
+local.object = spawn script_model "model" "models/statweapons/mg42_bipod_nonstatic.tik" "origin" "1176 611 350" "angles" "0 180 0" 
+local.object notsolid
+local.mg42 = spawn "models/statweapons/mg42_gun.tik" "origin" "1175 610 350" "angles" "0 180 0" 
+local.mg42 yawcenter 180
+local.mg42 maxyawoffset 60
+
+local.health = spawn "models/items/dm_50_healthbox.tik" "origin" "1175 572 460" "angles" "0 0 -90"
+
+//tightrope
+local.beam = spawn func_beam "targetname" "balcony"
+local.beam.origin = ( 1400 1136 -64 )
+local.beam endpoint ( 1113 1136 223 )
+
+local.beam = spawn func_beam "targetname" "balcony"
+local.beam.origin = ( 1113 1136 223 )
+local.beam endpoint ( 903 1136 223 )
+
+$balcony color ( 0 .2 0 )
+$balcony scale 5
+$balcony maxoffset 0
+$balcony doactivate
+
+local.clipbrush = spawn script_object
+local.clipbrush.origin = ( 1400 1136 -64 )
+local.clipbrush setsize ( -405 -5 -1 ) ( 0 5 0 )
+local.clipbrush.angles = (45 0 0)
+local.clipbrush solid
+
+local.clipbrush = spawn script_object
+local.clipbrush.origin = ( 1113 1136 226 )
+local.clipbrush setsize ( -210 -5 -1 ) ( 0 5 0 )
+local.clipbrush.angles = (0 0 0)
+local.clipbrush solid
+end
+
+
+L_walk:
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" ( 361 -406 112) 
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" ( 361 -335 112) 
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" ( 361 -264 112) 
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " 361 -193 112" 
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " 361 -122 112" 
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " 361 -51 112" 
+local.crate nodamage
+
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "302 -488 112" "angles" "0 90 0" 
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "231 -488 112" "angles" "0 90 0" 
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "160 -488 112" "angles" "0 90 0" 
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "89 -488 112" "angles" "0 90 0" 
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "18 -488 112" "angles" "0 90 0" 
+local.crate nodamage
+
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "361 -477 -175"
+local.crate time 3
+local.trig = spawn trigger_multiple "origin" local.crate.origin
+local.trig setsize ( -20 -20 0) ( 20 20 82)
+while(1)
+{
+local.trig waitTill trigger
+local.crate moveup 287
+local.crate waitmove
+wait 3
+local.crate.origin = "361 -477 -175"
+}
+
+ usable:
+// Health and Weapons
+
+local.fix1 = spawn models/items/dm_50_healthbox.tik "origin" ( -580 1150 265) "angles"  ( 0 90 90)
+local.fix1 wait 20
+local.fix1 = spawn models/items/dm_50_healthbox.tik "origin" ( 213 -68 235) "angles" ( 0 180 90 )
+local.fix1 wait 20
+
+local.give = spawn weapons/svt_rifle.tik "origin" (1520 810 466) "angles" ( 180 -90 0)
+local.give = spawn weapons/springfield.tik "origin" ( -770 830 360 ) "angles" ( 180 180 0)
+local.give = spawn weapons/sten.tik "origin" ( -754 0 -105 ) "angles" ( 180 0 0)
+local.give = spawn weapons/kar98_mortar.tik "origin" (200 -155 620) "angles" ( 0 -90 180)
+local.give wait 20
+local.give = spawn weapons/shotgun.tik "origin" ( -255 1180 -6 ) "angles" ( 180 0 0)
+local.give wait 20
+
+    //////////////////
+  //  static weapons  //
+//////////////////
+local.mg42 = spawn statweapons/mg42_bipod_nonstatic.tik
+local.mg42.origin = ( -237 1534 255 )
+local.mg42.angles = ( 0 270 0 )
+
+local.mg42 = spawn vehicles/PzB41_turret_viewmodel.tik                               //PzB41_turret.tik
+local.mg42.origin = ( -235.5 1533 255 )
+local.mg42.angles = ( 0 270 0 )
+local.mg42 yawcenter 270
+local.mg42 maxyawoffset 45  //26
+//
+local.mg42 = spawn statweapons/mg42_bipod_nonstatic.tik
+local.mg42.origin = ( -509 620 289 )
+local.mg42.angles = ( 0 0 0 )
+
+local.mg42 = spawn statweapons/mg42_gun.tik
+local.mg42.origin = ( -507 621.5 289 )
+local.mg42.angles = ( 0 0 0 )
+local.mg42 yawcenter 0
+local.mg42 maxyawoffset 68
+end
+
+walkway: 
+    //////////////
+  //   walkway   //
+//////////////
+local.sand = spawn script_model "targetname" "walkway"
+local.sand model "models/static/sandbag_longsegment.tik"
+local.sand.origin = ( -575 1300 175 )
+local.sand.angles = ( 90 0 0 )
+
+local.sand = spawn script_model "targetname" "walkway"
+local.sand model "models/static/sandbag_link_main.tik"
+local.sand.origin = ( -575 980 175 )
+local.sand.angles = ( 90 0 0 )
+
+local.sand = spawn script_model "targetname" "walkway"
+local.sand model "models/static/sandbag_link_main.tik"
+local.sand.origin = ( -575 876 175 )
+local.sand.angles = ( 90 0 0 )
+
+$walkway time 3
+level.position = 1
+//
+level.switch = spawn script_model "model" "miscobj/trainswitch_pulsating.tik"
+level.switch.origin = ( -625 830 224 )
+level.switch.angles = (0 180 0)
+level.switch notsolid
+
+level.useswitch = spawn trigger_use
+level.useswitch.origin = (level.switch.origin)
+level.useswitch setsize ( -5 -5 0 ) ( 5 5 80 )
+level.useswitch setthread movewalkway
+//
+level.switch2 = spawn script_model "model" "miscobj/trainswitch_pulsating.tik"
+level.switch2.origin = ( -306 1525 -32 )
+level.switch2.angles = (0 180 0)
+level.switch2 notsolid
+
+level.useswitch2 = spawn trigger_use
+level.useswitch2.origin = (level.switch2.origin)
+level.useswitch2 setsize ( -5 -5 0 ) ( 5 5 80 )
+level.useswitch2 setthread movewalkway
+end
+
+movewalkway:
+if(level.moving == 1) //prevent both switches used at the same time
+    {end}
+level.moving = 1
+
+if(level.position == 1)
+    {
+            level.switch playsound switchbox
+            level.switch2 playsound switchbox
+            wait .2
+    level.switch.angles = (0 0 0)
+    level.switch2.angles = (0 0 0)
+             level.switch playsound portcullis_close_move
+    $walkway moveWest 60
+    $walkway waitmove
+             level.switch playsound portcullis_close_stop
+    level.position = 0
+    }
+else
+   {  
+            level.switch playsound switchbox
+            level.switch2 playsound switchbox
+            wait .2
+   level.switch.angles = (0 180 0)
+   level.switch2.angles = (0 180 0)
+            level.switch playsound portcullis_close_move
+   $walkway moveEast 60
+   $walkway waitmove
+            level.switch playsound portcullis_close_stop
+   level.position = 1
+   } 
+level.moving = 0
+end
+
+boomcrate:
+    ////////////////////
+  // Exploding Bridge  //
+////////////////////
+while(1)
+{
+ local.crate1 = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -856 -21 145)
+ local.crate2 = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -856 50 145)
+ local.crate3 = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -856 121 145)
+ local.crate4 = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -856 192 145)
+ local.crate5 = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -856 263 145)
+ local.crate6 = spawn script_model "model" "models/static/indycrate.tik" "origin" ( -856 334 145)
+
+//exec showbox.scr::setsize ( -856 156.5 145) ( -27 -145 -5) ( 27 145 50)  
+
+ local.trigger = spawn trigger_multiple "spawnflags" "128" 
+ local.trigger.origin =  ( -856 156.5 145 )
+ local.trigger setsize ( -30 -145 -5) ( 30 145 50) 
+ local.trigger.angles = (0 0 0)
+ local.trigger immune grenade
+ local.trigger immune fire
+ local.trigger waittill trigger
+ local.killer = parm.other
+
+for(local.person = 1; local.person <= $player.size;local.person++)
+      {
+       if(vector_within local.trigger.origin $player[local.person].origin 250)
+          {$player[local.person] damage local.killer 200 local.killer (0 0 0) (0 0 0) (0 0 0) 0 1 9 -1}
+      }
+local.trigger remove
+
+local.crate3 remove
+exec global/model.scr local.crate3.origin models/emitters/explosion_mine.tik 
+local.crate4 remove
+exec global/model.scr local.crate4.origin models/emitters/explosion_mine.tik 
+wait .2
+local.crate2 remove
+exec global/model.scr local.crate2.origin models/emitters/explosion_mine.tik 
+local.crate5 remove
+exec global/model.scr local.crate5.origin models/emitters/explosion_mine.tik 
+wait .2
+local.crate1 remove
+exec global/model.scr local.crate1.origin models/emitters/explosion_mine.tik 
+local.crate6 remove
+exec global/model.scr local.crate6.origin models/emitters/explosion_mine.tik 
+wait 20
+}
+end
+
+
+
+//=========================================
+//   Teleport1: goes to sniper nest  
+//=========================================
+teleport1:
+
+local.beam = spawn func_beam "targetname" "doorway1" origin ( 1340 1155 -255) endpoint ( 1340 1155 -159)
+local.beam = spawn func_beam "targetname" "doorway1" origin ( 1285 1155 -255) endpoint ( 1285 1155 -159)
+local.beam = spawn func_beam "targetname" "doorway1" origin ( 1340 1155 -159) endpoint ( 1285 1155 -159)
+
+$doorway1 color ( 0 1 0 )
+$doorway1 scale .25
+$doorway1 numsegments 1
+$doorway1 activate
+
+local.trig = spawn trigger_multiple "origin" ( 1315 1170 -255) "targetname" "door1_trig"
+local.trig setsize ( -20 -5 0 ) ( 20 5 80 )
+local.trig setThread port1
+
+local.block = spawn script_object origin (1340 864 280)  "targetname" "protect_nest"
+local.block setsize ( -150 -275 0) ( 370 275 250)   
+
+//exec showbox.scr::setsize (1340 864 280) ( -150 -275 0) ( 370 275 250)  
+end
+
+port1:
+local.p = parm.other
+local.p nodamage
+
+if(level.in_nest == 1)
+   {local.p tele ( -850 499 -31)
+    local.p.viewangles = ( 0 0 0 )
+    wait 1
+    local.p takedamage}
+else
+{
+level.in_nest = 1
+local.p tele ( 1660 600 383 )
+local.p.viewangles = ( 0 135 0 )
+wait 1
+local.p takedamage
+
+while(level.in_nest)
+          {
+          wait 3
+          level.in_nest = 0
+          for(local.p=1;local.p<=$player.size;local.p++) {if($player[local.p] isTouching $protect_nest) {level.in_nest = 1}}
+          }
+}
+end 
+
+
+//=========================================
+//   Escape From Courtyard
+//=========================================
+courtyard:
+local.beam = spawn func_beam "targetname" "doorway2" origin ( -418 -2045 -127) endpoint ( -418 -2045 -31)
+local.beam = spawn func_beam "targetname" "doorway2" origin ( -478 -2045 -127) endpoint ( -478 -2045 -31)
+local.beam = spawn func_beam "targetname" "doorway2" origin ( -418 -2045 -31) endpoint ( -478 -2045 -31)
+$doorway2 color (0 1 0)
+$doorway2 scale .25
+$doorway2 numsegments 1
+$doorway2 activate
+
+local.trig = spawn trigger_multiple "origin" ( -447 -2045 -127) "targetname" "door2"
+local.trig setsize ( -30 -5 0 ) ( 30 5 80 )
+local.trig setThread port2
+//
+local.beam = spawn func_beam "targetname" "doorway3" origin ( -546 -2045 -127) endpoint ( -546 -2045 -31)
+local.beam = spawn func_beam "targetname" "doorway3" origin ( -606 -2045 -127) endpoint ( -606 -2045 -31)
+local.beam = spawn func_beam "targetname" "doorway3" origin ( -546 -2045 -31) endpoint ( -606 -2045 -31)
+$doorway3 color ( 0 1 0 )
+$doorway3 scale .25
+$doorway3 numsegments 1
+$doorway3 activate
+
+local.trig = spawn trigger_multiple "origin" ( -576 -2045 -127) "targetname" "door3"
+local.trig setsize ( -30 -5 0 ) ( 30 5 80 )
+local.trig setThread port3
+end
+
+port2:
+local.p = parm.other
+local.p nodamage
+local.p tele ( 571 120 -207)
+local.p.viewangles = ( 0 90 0 )
+$door2 notTriggerable
+$doorway2 color (1 0 0)
+wait 1
+local.p takedamage
+wait 30
+$door2 triggerable
+$doorway2 color (0 1 0) 
+end 
+
+port3:
+local.p = parm.other
+local.p nodamage
+local.p tele ( -820 1636 -63)
+local.p.viewangles = (0 -45 0)
+$door3 notTriggerable
+$doorway3 color (1 0 0)
+wait 1
+local.p takedamage
+wait 30
+$door3 triggerable
+$doorway3 color (0 1 0) 
+end 
+
+//=========================================
+//   Lift and switch: rooftop access
+//=========================================
+lift_switch:
+level.lift_switch = spawn script_model "model" "models/miscobj/electrical_switch_pulse.tik" "origin" " -641 -350 195" 
+level.lift_switch notsolid
+level.lift_trig = spawn trigger_use "origin" (level.lift_switch.origin)
+level.lift_trig setsize ( -5 0 -5) ( 5 2 5)
+level.lift_trig setThread liftme
+end
+
+liftme:
+level.lift_trig notTriggerable
+level.lift_switch playsound switchbox 
+level.lift_switch model "models/miscobj/electrical_switch_nopulse.tik"
+level.lift_switch notsolid
+level.lift_switch anim on
+wait .5
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -663 -350 80" 
+local.crate time 3
+local.crate moveup 353
+local.crate waitmove
+wait 2
+local.crate delete
+wait 30
+level.lift_switch model "models/miscobj/electrical_switch_pulse.tik"
+level.lift_switch notsolid
+level.lift_trig Triggerable
+end
+
+
+killstoppers:
+   /////////////////////
+ // spawnkill stoppers  //
+////////////////////
+ local.killstop = spawn script_model "model" "models/static/barbwire.tik" "origin" ( -890 -1593 -127 ) "angles" (0 45 0) 
+ local.killstop nodamage
+ local.killstop = spawn script_model "model" "models/static/barbwire.tik" "origin" ( -890 -1593 -27 ) "angles" (0 45 0) 
+ local.killstop nodamage
+ local.killstop = spawn script_model "model" "models/static/barbwire.tik" "origin" ( -663 -1700 -127 ) "angles" (0 90 0) 
+ local.killstop nodamage
+ local.killstop = spawn script_model "model" "models/static/barbwire.tik" "origin" ( -663 -1700 -27 ) "angles" (0 90 0) 
+ local.killstop nodamage
+ local.killstop = spawn script_model "model" "models/static/barbwire.tik" "origin" ( -350 -1700 -127 ) "angles" (0 90 0) 
+ local.killstop nodamage
+ local.killstop = spawn script_model "model" "models/static/barbwire.tik" "origin" ( -350 -1700 -27 ) "angles" (0 90 0) 
+ local.killstop nodamage
+ local.killstop = spawn script_model "model" "models/static/barbwire.tik" "origin" ( -133 -1597 -127 ) "angles" (0 -45 0) 
+ local.killstop nodamage
+ local.killstop = spawn script_model "model" "models/static/barbwire.tik" "origin" ( -133 -1597 -27) "angles" (0 -45 0) 
+ local.killstop nodamage
+end
+
+rooftop:
+local.object = spawn script_model "model" "models/static/barbwire_long.tik" "origin" " -460 -420 540" "angles" "0 90 0" 
+local.object hide
+local.object = spawn script_model "model" "models/static/cratelid1.tik" "origin" " -555 -382 555" "angles" "90 0 90" "scale" "10" 
+local.object notsolid
+local.object = spawn script_model "model" "models/static/cratelid1.tik" "origin" " -382 -382 555" "angles" "90 0 90" "scale" "10" 
+local.object notsolid
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -604 -280 480" "angles" "0 90 0" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -604 -280 527" "angles" "0 90 0" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -407 -221 480"    //step
+local.object nodamage
+
+local.object = spawn script_model "model" "models/static/cratelid1.tik" "origin" " -315 -149 546" "angles" "0 0 180" "scale" "10" local.object notsolid
+local.object = spawn script_model "model" "models/static/cratelid1.tik" "origin" " -168 -149 546" "angles" "0 0 180" "scale" "10" 
+local.object notsolid
+local.object = spawn script_model "model" "models/static/cratelid1.tik" "origin" " -21 -149 546" "angles" "0 0 180" "scale" "10" 
+local.object notsolid
+local.object = spawn script_model "model" "models/static/cratelid1.tik" "origin" " 126 -149 546" "angles" "0 0 180" "scale" "10" 
+local.object notsolid
+local.object = spawn script_model "model" "models/static/cratelid1.tik" "origin" " 200 -154 570" "angles" "90 0 0" "scale" "10" 
+local.object notsolid
+local.object = spawn script_model "model" "models/static/cratelid1.tik" "origin" " 126 -223 550" "angles" "0 0 90" "scale" "10" 
+local.object notsolid
+local.object = spawn script_model "model" "models/static/cratelid1.tik" "origin" " -21 -223 550" "angles" "0 0 90" "scale" "10" 
+local.object notsolid
+local.object = spawn script_model "model" "models/static/cratelid1.tik" "origin" " -168 -223 550" "angles" "0 0 90" "scale" "10" 
+local.object notsolid
+local.object = spawn script_model "model" "models/static/barbwire_long.tik" "origin" " 100 -258 544" "angles" "0 90 0" 
+local.object hide
+local.object = spawn script_model "model" "models/static/barbwire_long.tik" "origin" " 235 -390 544" 
+local.object hide
+
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -360 -147 544" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -360 -147 591" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -348 -88 544" "angles" "0 90 0" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -348 -88 591" "angles" "0 90 0" 
+local.object nodamage
+
+for (local.x = 167; local.x >= -277; local.x -= 111)
+       {local.box = spawn script_model "model" "models/static/indycrate.tik" "origin" ( local.x -88 544) "angles" "0 90 0" 
+        local.box nodamage
+        local.box = spawn script_model "model" "models/static/indycrate.tik" "origin" ( local.x -88 591) "angles" "0 90 0" 
+        local.box nodamage}
+end
+
+tripwire1:
+local.wire = spawn func_beam 
+local.wire.origin = ( 330 964 -56 )
+local.wire endpoint ( 330 1210 -56 )
+local.wire color ( 1 0 0.15)
+local.wire scale .25
+local.wire numsegments 1
+local.wire activate
+
+local.trip = spawn trigger_multiple "targetname" "tripwire1"
+local.trip.origin = ( 330 1077 -56) //middle of wire
+local.trip setsize ( -1 -123 -1 ) ( 1 123 1 ) //stretch to fit wire
+local.trip setthread boom1
+
+while(1)
+{
+for (local.place = 330; local.place <= 535; local.place += 3)
+        {
+        local.wire.origin = ((local.place) 964 -56 )
+        local.wire endpoint ((local.place) 1210 -56 )
+        local.trip.origin = ((local.place) 1077 -56)
+        waitframe
+        }
+for (local.place = 535; local.place >= 330; local.place -= 3)
+        {
+        local.wire.origin = ((local.place) 964 -56 )
+        local.wire endpoint ((local.place) 1210 -56 )
+        local.trip.origin = ((local.place) 1077 -56)
+        waitframe
+        }
+}
+end
+
+boom1:
+$tripwire1 notTriggerable
+exec global/model.scr $tripwire1.origin
+radiusdamage ($tripwire1.origin) 250 125 ///damage and radius 
+parm.other iprint "Watch out for red tripwires!"
+parm.other stufftext "say <<== TRIGGERED BOOBY TRAP"
+wait 2
+$tripwire1 triggerable
+end
+
+
+tripwire2:
+local.wire = spawn func_beam 
+local.wire.origin = ( 250 -385 -122 )
+local.wire endpoint ( 250 -515 -122 )
+local.wire color ( 1 0 0.15)
+local.wire scale .25
+local.wire numsegments 1
+local.wire activate
+
+local.trip = spawn trigger_multiple "targetname" "tripwire2"
+local.trip.origin = ( 250 -450 -122) //middle of wire
+local.trip setsize ( -1 -65 -1 ) ( 1 65 1 ) //stretch to fit wire
+local.trip setthread boom2 
+
+while(1)
+{
+   if(randomint 2)
+      {local.height = -122}
+else
+      {local.height = -70}
+
+for (local.place = 250; local.place >= -15; local.place -= 4)
+        {local.wire.origin = ((local.place) -385 local.height)
+        local.wire endpoint ((local.place) -515 local.height)
+        local.trip.origin = ((local.place) -450 local.height)
+        waitframe}
+
+   if(randomint 2)
+      {local.height = -122}
+else
+      {local.height = -70}
+
+for (local.place = -15; local.place <= 250; local.place += 4)
+        {local.wire.origin = ((local.place) -385 local.height)
+        local.wire endpoint ((local.place) -515 local.height)
+        local.trip.origin = ((local.place) -450 local.height)
+        waitframe}
+}
+
+end
+
+boom2:
+$tripwire2 notTriggerable
+exec global/model.scr $tripwire2.origin
+radiusdamage ($tripwire2.origin) 250 70 ///damage and radius 
+parm.other iprint "Watch out for red tripwires!"
+parm.other stufftext "say <<== TRIGGERED BOOBY TRAP"
+wait 2
+$tripwire2 triggerable
+end
+
+
+door:
+ local.door = spawn script_model "targetname" "newdoor"
+ local.door model "models/static/cratelid2.tik"  
+ local.door.origin = ( 14 -280 225 )
+ local.door.angles = ( 0 90 90 )
+ local.door.scale = 4
+ local.door notsolid
+
+ local.clipbrush = spawn script_object "targetname" "newdoor"
+ local.clipbrush.origin = (14 -325 210)
+ local.clipbrush setsize ( -1 0 0 ) ( 1 65 150 )
+ local.clipbrush solid
+ local.clipbrush nodamage 
+
+$newdoor time 1.5
+while(1)
+{
+local.usedoor = spawn trigger_use
+local.usedoor.origin = ( 14 -280 225 )
+local.usedoor setsize ( -5 -30 -30 ) ( 5 30 30 )
+local.usedoor waitTill trigger
+local.usedoor remove
+
+    $newdoor playsound barn_door_locked
+    $newdoor movenorth 65
+    $newdoor waitmove
+wait 3
+    $newdoor playsound barn_door_locked
+    $newdoor movesouth 65
+    $newdoor waitmove  
+}
+end
+
+/////////////////////////////////////////////////////
+burnme:
+local.switch = spawn script_model "model" "miscobj/trainswitch_pulsating.tik" "origin" " -70 150 160" 
+local.switch notsolid
+local.useswitch = spawn trigger_use "origin" local.switch.origin
+local.useswitch setsize ( -5 -5 0 ) ( 5 5 80 )
+
+while(1)
+{
+local.useswitch waitTill trigger
+local.switch.angles = (0 180 0)
+local.switch playsound switchbox
+local.switchman = parm.other
+
+local.fire = spawn script_model "model" "models/emitters/fire.tik" "scale" "2.5"
+local.fire.origin = ( -270 1610 192)
+local.fire loopsound fire_large
+
+for(local.t=1;local.t<=60;local.t++)
+      {
+      for(local.p=1;local.p<=$player.size;local.p++)
+            {
+            if(local.fire cansee $player[local.p] 360 150) 
+                {$player[local.p] damage local.switchman 10 local.switchman (0 0 0) (0 0 0) (0 0 0) 0 1 21 -1}
+            }
+      wait 0.5
+      }
+local.fire delete
+local.switch.angles = (0 0 0)
+} 
+end
+
+//**********************MODS*****************************
+EnlightModThread:
+while (1)
+{
+	wait .2                                                                          // Infinite Loop Error Removal
+	for (local.i = 1; local.i < ($player.size + 1); local.i++)
+	{
+		local.player = $player[local.i]
+		if (local.player != NIL && local.player.dmteam != "spectator")
+		{
+			if ( getcvar (g_gametype) == "1")
+					local.player light 0 0 1 150                            // Free For All, All Players Blue
+			else
+			{
+				if (local.player.dmteam == "allies")
+						local.player light 0 1 1 150                        // Allies light green
+				else
+						local.player light 1 0 0 150                        // Nazi Flag is Red, so axis are too
+			}
+
+		}
+		else
+		{
+			local.player light 0 0 0 0		
+		}
+		// Possible glitch: selecting team but not weapon = Spectator with Spotlight
+	}
+}
+end

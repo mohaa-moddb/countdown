@@ -34,7 +34,7 @@ main:
 		}
 
 		local.gametypestring = getcvar "g_gametypestring"
-		setcvar "g_gametypestring" "Countdown"
+		setcvar "g_gametypestring" "*Countdown*"
 
 		setcvar "session" local.gametype
 	

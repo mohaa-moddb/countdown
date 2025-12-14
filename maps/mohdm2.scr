@@ -1,0 +1,181 @@
+// DESTROYED VILLAGE
+// ARCHITECTURE: NED
+// SCRIPTING: NED
+
+// **********************************************************************
+// Extended-Gametype Mapscript Version 1.2.1 (05-14-05)
+// By Mark Follett (Mefy)
+// email: mef123@geocities.com
+// web: www.planetmedalofhonor.com/mefy
+// You are free to modify and redistribute as long as you keep these
+// credits.
+// **********************************************************************
+
+main:
+
+// set scoreboard messages
+
+
+setcvar "g_scoreboardpic" "mohdm2"
+
+	switch (waitthread global/libmef/util.scr::get_gametype)
+	{
+		case "ctf":
+		case "ftctf":
+		case "dem":
+		case "ftdem":
+			waitthread setup_bases
+			break
+	}
+
+	level waittill prespawn
+
+	//*** Precache Dm Stuff
+	exec global/DMprecache.scr
+
+	exec global/door_locked.scr::lock
+	level.script = maps/dm/mohdm2.scr
+	exec global/ambient.scr mohdm2
+	
+	level waittill spawn
+	thread EnlightModThread
+
+
+	if (level.mef_baseversion == "sh" || level.mef_baseversion == "bt")
+	{
+		$world commanddelay 0 farclipoverride -1
+	}
+
+
+	//add in our kill brush under the cheat point.
+	local.killbrush = spawn trigger_hurt
+	local.killbrush damage 10000
+	local.killbrush.origin = ( -2200 2200 -80 )
+	local.killbrush setsize ( -1000 -1000 -120 ) ( 1000 1000 0 )
+
+
+//Static weapons
+
+	local.mg422 = spawn models/statweapons/mg42_gun.tik
+	local.mg422.origin = ( -694 -1038 616)
+	local.mg422.angle = -90 
+	local.mg422 yawCenter -90
+	local.mg422 maxyawoffset 40
+	local.mg42B = spawn script_model
+	local.mg42B model "statweapons/mg42_bipod.tik"
+	local.mg42B.origin = ( -694 -1038 616)
+	local.mg42B.angles = (0 -90 0)
+ 	local.mg42B solid
+
+
+// <-----------------------------------------------------------------------
+//Prevent snipers from camping at this spot...not fair play!
+       
+	local.nebela = spawn models/statweapons/nebelwerfer_d.tik
+	local.nebela.origin = ( -2437 1585 217)
+	local.nebela.angle = -91
+        local.nebela yawCenter -91
+        local.nebela maxyawoffset 50
+	local.nebela solid
+
+
+	local.nebelb = spawn models/statweapons/nebelwerfer_d.tik
+	local.nebelb.origin = ( -2990 1465 175)
+	local.nebelb.angle = -91
+        local.nebelb yawCenter -91
+        local.nebelb maxyawoffset 90
+	local.nebelb solid
+// <-----------------------------------------------------------------------
+
+
+        //local.dead_halftrack = spawn script_model
+	//local.dead_halftrack model "vehicles/t34_base_d.tik"
+
+
+        local.jeep = spawn script_object 
+	local.jeep model "vehicles/jeep.tik"
+	local.jeep.origin = ( -2422 -2504 -119)
+	local.jeep.angles = (7 5 360)
+	local.jeep nodamage
+	local.jeep solid
+	local.jeep immune explosion
+	local.jeep immune bash
+               
+  
+
+//Smoke
+	local.smoke = spawn script_model
+	local.smoke model "emitters/shermansmoke.tik"
+	local.smoke.origin = ( -2448 -2494 -70)
+	local.smoke.angles = (0 133 0)
+
+
+//Mapfix
+	local.fix = spawn script_model model "static/static_nazibanner1a.tik"
+	local.fix.origin = ( -2540 1496 310)
+	local.fix.angle = 170
+	local.fix hide
+	
+
+
+end
+
+//-----------------------------------------------------------------------------
+
+
+setup_bases:
+	waitthread global/libmef/util.scr::read_gametype_settings
+	
+	// common bases for dem and ctf
+	waitthread global/libmef/bases.scr::addbasepair "-2162 -2584 -123.02 20 E: Halftrack" "-1278 1038 13.08 155 W: Flak Cannon" m3 flak88
+	waitthread global/libmef/bases.scr::addbasepair "-754.96 -2688.59 -45.18 60 NE: Sherman Tank" "-2684.66 639.32 37.35 -114 SW: Panzer Tank" shermantank panzer ( 7 60 358 ) ( 0 246 2 )
+	waitthread global/libmef/bases.scr::addbasepair "-3163.42 -1963.39 -68.49 70 SE: GMC Truck" "506.45 -284.35 -57.75 -116 NW: Opel Truck" gmctruck opeltruck ( 0 70 3 ) ( 3 244 358 )
+	waitthread global/libmef/bases.scr::addbasepair "-2386 -1936 8.12 -40 Center Bldg HQ" "-569 207 40.12 60 Church HQ" cardtable cardtable
+
+	if ((level.mef_gametype == "dem" || level.mef_gametype == "ftdem") && level.mef_deepbases)
+	{
+		waitthread global/libmef/bases.scr::addbasepair "-1428 -3408 -17.32 0 East Bldg Ammo Crate" "-2629 1765 216.13 0 Barn Ammo Crate" indycrate indycrate
+	}
+	
+	// additional bases for ctf only
+	if (level.mef_gametype == "ctf" || level.mef_gametype == "ftctf")
+	{
+		// southeast/northwest
+		waitthread global/libmef/bases.scr::addbasepair "-3320 -2449 -22.94 60" "296 864 18.11 180"
+
+		// east/west
+		waitthread global/libmef/bases.scr::addbasepair "-1895 -1978 0.13 180" "-1036 1320 28.47 -90"
+
+		// northeast/southwest
+		waitthread global/libmef/bases.scr::addbasepair "-901 -3440 76.09 90" "-3091 806 24.09 -60"
+	}		
+end
+//**********************MODS*****************************
+EnlightModThread:
+while (1)
+{
+	wait .2                                                                          // Infinite Loop Error Removal
+	for (local.i = 1; local.i < ($player.size + 1); local.i++)
+	{
+		local.player = $player[local.i]
+		if (local.player != NIL && local.player.dmteam != "spectator")
+		{
+			if ( getcvar (g_gametype) == "1")
+					local.player light 0 0 1 150                            // Free For All, All Players Blue
+			else
+			{
+				if (local.player.dmteam == "allies")
+						local.player light 0 1 1 150                        // Allies light green
+				else
+						local.player light 1 1 0 150                        // Nazi Flag is Red, so axis are too
+			}
+
+		}
+		else
+		{
+			local.player light 0 0 0 0		
+		}
+		// Possible glitch: selecting team but not weapon = Spectator with Spotlight
+	}
+}
+end

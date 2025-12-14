@@ -1,0 +1,124 @@
+TIKI
+setup
+{
+	scale 0.02
+	path models/fx/dummy
+	skelmodel dummy2.skd
+}
+
+init
+{
+	client
+	{
+		cache snowPlume_01.spr
+		cache grenadeFire.spr
+	}
+	server  
+	{
+		classname Explosion
+		rendereffects +dontdraw
+		notsolid
+		radiusdamage 125
+		radius 375
+		meansofdeath grenade
+		life 0.1
+	}
+}
+
+animations
+{
+	idle dummy2.skc
+	{
+
+	}
+}
+
+
+animations
+{
+	aaaa dummy2.skc 
+	idle dummy2.skc
+	{
+		client
+		{
+			
+		//bits and pieces with smoke trails
+	
+			enter originspawn
+			(
+				count 5
+				model models/fx/grenadeTrail.tik
+				scale .25
+				life 0.45 .05
+				randvel crandom 200 crandom 200 crandom 200
+				friction 1
+				accel 0 0 -100
+//				avelocity crandom 500 0 0
+			)
+
+		//concussion
+			
+			enter originspawn
+			(
+				spawnrate 1
+				model snowPlume_01.spr
+				count 40
+				alpha 0.25
+				color 0.18 0.13 0.1
+				life .4
+				scalerate 6
+				randvel crandom 500 crandom 500 range 1 500
+				accel 0 0 -90
+				angles 0 0 crandom 50
+				avelocity 0 0 range -50 1000
+				fade
+			)
+			
+		//fiery blast
+		
+			enter originspawn
+			(
+				spawnrate 1
+				model grenadeFire.spr
+				count 4
+				color 1 1 1
+				life 0.15
+				scalerate 4
+				randvel 0 0 range 5 30
+				angles 0 0 crandom 50
+				avelocity 0 0 range -50 50
+				scalemin 0.1
+				scalemax 0.3
+				fade
+			)
+			
+		//smoke
+			
+			enter originspawn
+			(
+				spawnrate 1
+				model snowPlume_01.spr
+				count 15
+				alpha 0.41
+				color 0.18 0.13 0.1
+				life 2
+				scalerate 1.5
+				randvel crandom 50 crandom 50 range 10 60
+				accel 0 0 -100
+				angles 0 0 range -50 500
+				avelocity 0 0 crandom 50
+				scalemin 0.4
+				scalemax 0.5
+				fade
+			)
+
+
+		}
+
+		server    
+		{
+			first explosioneffect grenade
+		}
+	}
+} 
+

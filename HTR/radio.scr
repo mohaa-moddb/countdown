@@ -115,12 +115,12 @@ flash:
 			if(local.state ==1)
 			{
 				local.state = 0
-				$countdown_radio light 1 0 0 100
+				$countdown_radio light 1 1 0 400
 			}
 			else
 			{
 				local.state = 1
-				$countdown_radio light 0 0 1 100
+				$countdown_radio light 1 0 1 400
 			}
 		}
 	}
@@ -176,7 +176,7 @@ give_radio local.player:
 
 	if(local.light != "0")
 	{
-		local.player light 1 0 0 100
+		local.player light 0 0 1 400
 	}
 
 	local.player exec HTR/player_radio.scr 

@@ -1,0 +1,397 @@
+main:
+	level.script = maps/dm/MP_Malta_DM.scr
+	level.music = mp_malta_dm
+
+setcvar "g_scoreboardpic" "mp_malta_dm"
+
+
+
+	setcvar "g_scoreboardpic" "mp_malta_dm"
+
+	switch (waitthread global/libmef/util.scr::get_gametype)
+	{
+		case "ctf":
+		case "ftctf":
+		case "dem":
+		case "ftdem":
+			waitthread setup_bases
+			break
+	}
+
+
+//new spawnpoints///////////////////////////////
+local.ffa_spawnspot = spawn info_player_deathmatch "origin" " 392 -579 -1407" 
+local.ffa_spawnspot = spawn info_player_deathmatch "origin" " 2432 989 -783" "angle" " -90"
+local.ffa_spawnspot = spawn info_player_deathmatch "origin" " -989 -235 -1471" 
+local.ffa_spawnspot = spawn info_player_deathmatch "origin" " -87 1967 -1407" "angle" " -60"
+local.ffa_spawnspot = spawn info_player_deathmatch "origin" " -1027 1232 -1399" 
+local.ffa_spawnspot = spawn info_player_deathmatch "origin" " 2575 3805 -1055" "angle" " 180"
+/////////////////////////////////////////////////	
+
+level waittill prespawn
+exec global/ambient.scr
+exec global/DMprecache.scr
+exec global/door_locked.scr
+exec global/exploder.scr
+
+	$alliedmortar.collisionent = $granatwerfer_collision
+	$alliedmortar_turret0.collisionent = $granatwerfer_turret_collision
+	$alliedmortar thread global/stationaryweapons.scr::MountedStationaryWeaponWithCollision "models/statweapons/p_granatwerfer_d.tik" $granatwerfer_destroyed_collision
+	$alliedmortar_turret0 maxyawoffset "40"
+
+	$alliedmortar2.collisionent = $granatwerfer_collision
+	$alliedmortar2_turret0.collisionent = $granatwerfer_turret_collision
+	$alliedmortar2 thread global/stationaryweapons.scr::MountedStationaryWeaponWithCollision "models/statweapons/p_granatwerfer_d.tik" $granatwerfer_destroyed_collision
+	$alliedmortar2_turret0 maxyawoffset "40"
+	
+	$axismortar.collisionent = $granatwerfer_collision
+	$axismortar_turret0.collisionent = $granatwerfer_turret_collision
+	$axismortar thread global/stationaryweapons.scr::MountedStationaryWeaponWithCollision "models/statweapons/p_granatwerfer_d.tik" $granatwerfer_destroyed_collision
+	$axismortar_turret0 maxyawoffset "40"
+
+	$axismortar2.collisionent = $granatwerfer_collision
+	$axismortar2_turret0.collisionent = $granatwerfer_turret_collision
+	$axismortar2 thread global/stationaryweapons.scr::MountedStationaryWeaponWithCollision "models/statweapons/p_granatwerfer_d.tik" $granatwerfer_destroyed_collision
+	$axismortar2_turret0 maxyawoffset "40"
+
+	level waittill spawn
+	
+ $world farplane 10000
+
+	// Add in our clip brush at the cheat point.
+	local.clipbrush = spawn script_object
+	local.clipbrush.origin = ( -1056 -384 -1412 )
+	local.clipbrush setsize ( -36 -16 -76 ) ( 36 16 76 )
+	local.clipbrush solid
+
+	$mg42 pitchcaps ( -25 45 0)
+	$mg42 maxyawoffset "80"
+	$mg42_2 pitchcaps ( -25 45 0)
+	$mg42_2 maxyawoffset "65"
+	level.portcullis_open = 1
+	$trapdoor thread trapdoor_init
+	$portcullis_switch bind $portcullis_switch_origin
+	
+	//make all the switches non solid so as not to injure the player when triggered.
+	$portcullis_switch notsolid	
+	$portcullis_switch_origin notsolid
+	$portcullis open $portcullis_entity
+
+	$walltrigger thread exploder_init 1
+	$bridgetrigger thread exploder_init 2
+	$walltrigger2 thread exploder_init 3
+	$nudietrigger thread exploder_init 4
+	$debristrigger thread exploder_init 5
+	$balconytrigger thread exploder_init 6
+	$limestonetrigger1 thread exploder_init 7
+	$limestonetrigger2 thread exploder_init 8
+	$towercorner_trigger thread exploder_init 9
+	$prisoncorner_trigger thread exploder_init 10
+	$bunkertrigger thread exploder_init 11
+	$alleytrigger thread exploder_init 12
+
+
+if(int(getcvar "g_gametype") == 1) {thread block}
+thread addcrate
+thread usable
+thread oldspawn
+thread tightrope
+thread EnlightModThread
+
+
+end
+setup_bases:
+	// Base positions by Kaotik
+	waitthread global/libmef/bases.scr::addbasepair "2431.08 2360.09 -1407.88 -90 NW Sector" "-128.09 -800.87 -1412.28 90 SE Sector"
+	waitthread global/libmef/bases.scr::addbasepair "-1088.20 1288.86 -1735.88 0 S River" "2536.88 -918.83 -1191.88 180 N Doors"
+	waitthread global/libmef/bases.scr::addbasepair "-1045.13 1924.10 -1399.88 0 S River" "500.15 -2096.87 -1367.88 90 NE sector"
+end
+
+block:
+local.wire1 = spawn script_model model "static/barbwire.tik" "origin" " 1375 -1916 -1395"
+local.wire1 = spawn script_model model "static/barbwire.tik" "origin" " 1375 -1916 -1293"
+
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " 992 -1370 -1087 " "angles" "0 90 0"
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " 992 -1370 -1040" "angles" "0 90 0"
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " 440 -720 -1407" "angles" "0 -117 0"
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " 440 -720 -1360" "angles" "0 -117 0"
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -944 -390 -1471" "angles" "0 90 0"
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -944 -390 -1424" "angles" "0 90 0"
+
+local.clipbrush = spawn script_object
+local.clipbrush.origin = ( 292 -544 -999 )
+local.clipbrush setsize ( -20 -20 -20 ) ( 20 20 20 )
+local.clipbrush solid
+end
+
+addcrate:
+local.step = spawn script_model "model" "models/static/indycrate.tik" "origin" " 1065 590 -999" "angles" "0 90 0"
+local.step = spawn script_model "model" "models/static/indycrate.tik" "origin" " 663 590 -999" "angles" "0 90 0"
+
+local.perch = spawn script_model "model" "models/static/indycrate.tik" "origin" " 2396 871 -800"
+local.perch = spawn script_model "model" "models/static/indycrate.tik" "origin" " 2424 643 -1024"
+local.perch = spawn script_model "model" "models/static/indycrate.tik" "origin" " 2424 714 -977"
+
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -157 660 -1342" "angles" "0 45 0"
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -157 660 -1295" "angles" "0 45 0"
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -106.5 609.5 -1342" "angles" "0 45 0"
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -56 559 -1342" "angles" "0 45 0"
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -56 559 -1295" "angles" "0 45 0"
+local.crate nodamage
+
+local.sand = spawn script_model "model" "models/static/sandbag_link_main.tik" "origin" " 770 2450 -1408"
+local.sand nodamage
+local.sand = spawn script_model "model" "models/static/sandbag_link_leftbend.tik" "origin" " 770 2372 -1408"
+local.sand nodamage
+local.sand = spawn script_model "model" "models/static/sandbag_link_main.tik" "origin" " 692 2372 -1408" "angles" " 0 -90 0"
+local.sand nodamage
+local.sand = spawn script_model "model" "models/static/sandbag_link_main.tik" "origin" " 588 2372 -1408" "angles" " 0 -90 0"
+local.sand nodamage
+local.sand = spawn script_model "model" "models/static/sandbag_link_main.tik" "origin" " 484 2372 -1408" "angles" " 0 -90 0"
+local.sand nodamage
+local.sand = spawn script_model "model" "models/static/sandbag_link_topcap.tik" "origin" " 691 2372 -1368" "angles" " 0 -90 0"
+local.sand nodamage
+local.sand = spawn script_model "model" "models/static/sandbag_link_main.tik" "origin" " 613 2372 -1368" "angles" " 0 -90 0"
+local.sand nodamage
+local.sand = spawn script_model "model" "models/static/sandbag_link_bottomcap.tik" "origin" " 535 2372 -1368" "angles" " 0 -90 0"
+local.sand nodamage
+
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " 1580 -980 -1087" 
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -260 2092 -1411" 
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -260 2127 -1364" 
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -260 2162 -1317" 
+end
+
+////////////////////////////////////////////////////
+usable:
+local.weap = spawn "models/weapons/svt_rifle.tik" "origin" "790 650 -870" "angles" " -90 -90 0"
+
+local.mg42 = spawn statweapons/mg42_bipod_nonstatic.tik
+local.mg42.origin = ( -122 593.5 -1280 )
+local.mg42.angles = ( 0 45 0 )
+
+local.mg42 = spawn statweapons/mg42_gun.tik
+local.mg42.origin = ( -122.5 595.5 -1280 )
+local.mg42.angles = ( 0 45 0 )
+local.mg42 yawcenter 45
+local.mg42 maxyawoffset 40
+//
+local.mortar = spawn statweapons/P_granatwerfer_base.tik 
+local.mortar.origin = ( 359 675 -945 )
+local.mortar.angles = ( 0 90 0 )
+local.mortar nodamage
+
+local.mg42 = spawn statweapons/mg42_bipod_nonstatic.tik
+local.mg42.origin = ( 848.5 2561 -957 )
+local.mg42.angles = ( 0 -90 0 )
+
+local.mg42 = spawn vehicles/PzB41_turret.tik    //statweapons/mg42_gun.tik
+local.mg42.origin = ( 850 2560 -957 )
+local.mg42.angles = ( 0 -90 0 )
+local.mg42 yawcenter -90
+local.mg42 maxyawoffset 45
+//
+local.mg42 = spawn statweapons/mg42_bipod_nonstatic.tik
+local.mg42.origin = ( 749 2387 -1345 )
+local.mg42.angles = ( 0 -45 0 )
+
+local.mg42 = spawn statweapons/mg42_gun.tik
+local.mg42.origin = ( 751 2387 -1345 )
+local.mg42.angles = ( 0 -45 0 )
+local.mg42 yawcenter -45
+local.mg42 maxyawoffset 45
+end
+
+oldspawn:
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -2665 -1849 -1563" 
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -1408 -2384 -1263"
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -724 -1292 -1554"
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -568 -1607 -1255"
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -800 -464 -1311"
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " 738 -1489 -1370"
+end
+
+tightrope:
+local.beam = spawn func_beam
+local.beam.origin = ( 1375 2335 -1021 )
+local.beam endpoint ( 1375 623 -1021 )
+local.beam color ( 0 .2 0 )
+local.beam scale 5
+local.beam numsegments 1
+local.beam activate
+
+local.clipbrush = spawn script_object
+local.clipbrush.origin = (local.beam.origin)
+local.clipbrush setsize ( -5 -1720 0 ) ( 5 0 1 )
+local.clipbrush.angles = (0 0 0)
+local.clipbrush solid
+
+local.beam2 = spawn func_beam
+local.beam2.origin = ( 1697 3610 -1025 )
+local.beam2 endpoint ( 2097 3610 -1425 )
+local.beam2 color ( 0 .2 0 )
+local.beam2 scale 10
+local.beam2 numsegments 1
+local.beam2 activate
+
+local.clipbrush = spawn script_object
+local.clipbrush.origin = (local.beam2.origin)
+local.clipbrush setsize ( 0 -10 0 ) ( 570 10 1 )
+local.clipbrush.angles = (45 0 0)
+local.clipbrush solid
+end
+
+
+
+
+
+/////// Map called threads///////////
+//--------------------------------------------------------------
+//Open Portcullis
+//--------------------------------------------------------------
+animate_portcullis_switch:
+	
+	//dprintln "animating the switch"
+	//dprintln "level.portcullis_open = " level.portcullis_open
+	if( level.portcullis_open == 1 )
+	{
+		//dprintln "rotating down"
+		$portcullis_switch_origin speed 5
+		$portcullis_switch_origin rotatezdownto 180
+		$portcullis_switch_origin waitmove
+		$portcullis_switch_origin playsound switchbox
+	}
+	else
+	{
+		//dprintln "rotating up"
+		$portcullis_switch_origin speed .1
+		$portcullis_switch_origin rotatezupto 0
+		$portcullis_switch_origin waitmove
+		$portcullis_switch_origin playsound switchbox
+	}
+end
+
+toggle_portcullis:
+	$portcullis_trigger nottriggerable
+	thread animate_portcullis_switch
+	if (level.portcullis_open == 1)
+	{
+		$portcullis_entity playsound portcullis_close_move
+		$portcullis close $portcullis_entity
+		wait 5
+		$portcullis_entity playsound portcullis_close_stop
+		level.portcullis_open = 0
+	}
+	else
+	{
+		$portcullis_entity playsound portcullis_open_move
+		$portcullis open $portcullis_entity
+		wait 5	
+		$portcullis_entity playsound portcullis_open_stop	
+		level.portcullis_open = 1
+	}
+	$portcullis_trigger triggerable
+end
+
+trapdoor_init:
+	self solid
+	self damage 0
+	level.trapdoor_state = 0
+trapdoor_loop_start:
+	self waittill use
+	if (level.trapdoor_state  == 0)
+	{
+		self thread trapdoor_open
+	}
+	else if (level.trapdoor_state  == 1)
+	{
+		self thread trapdoor_close
+	}
+	goto trapdoor_loop_start
+end
+
+trapdoor_cycle local.duration:
+	wait local.duration
+	if (level.trapdoor_state == 1)
+	{
+		self thread trapdoor_close		
+	}
+end
+
+trapdoor_open:
+	level.trapdoor_state = 1
+	self openportal
+	self playsound gate_wood_open_move
+	self rotatezupto 90
+	self time 1
+	self waitmove
+	self playsound gate_wood_open_stop
+	self thread trapdoor_cycle 15
+	
+end
+
+trapdoor_close:
+	self playsound gate_wood_close_move
+	level.trapdoor_state = 0
+	self rotatezdownto 0
+	self time 1
+	self waitmove
+	self playsound gate_wood_close_stop
+	self closeportal
+end
+
+// Exploders
+//
+// Exploding Wall
+
+exploder_init local.set:
+	self immune bash
+	self immune bullet
+	self immune shotgun
+	//self immune aagun
+                  self immune fire
+                  self immune impale
+                  self immune vehicle
+
+exploder_start_loop:
+	self waittill damage
+	//dprintln "Hit! " self.health
+	if (self.health > 0)
+		goto exploder_start_loop
+	//dprintln "BOOM!"
+	thread global/exploder.scr::explode local.set
+	self remove
+end
+//**********************MODS*****************************
+EnlightModThread:
+while (1)
+{
+	wait .2                                                                          // Infinite Loop Error Removal
+	for (local.i = 1; local.i < ($player.size + 1); local.i++)
+	{
+		local.player = $player[local.i]
+		if (local.player != NIL && local.player.dmteam != "spectator")
+		{
+			if ( getcvar (g_gametype) == "1")
+					local.player light 0 0 1 150                            // Free For All, All Players Blue
+			else
+			{
+				if (local.player.dmteam == "allies")
+						local.player light 0 1 1 150                        // Allies light green
+				else
+						local.player light 1 1 0 150                        // Nazi Flag is Red, so axis are too
+			}
+
+		}
+		else
+		{
+			local.player light 0 0 0 0		
+		}
+		// Possible glitch: selecting team but not weapon = Spectator with Spotlight
+	}
+}
+end

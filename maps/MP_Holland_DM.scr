@@ -1,0 +1,87 @@
+// Holland
+
+// **********************************************************************
+// Extended-Gametype Mapscript Version 1.2.1 (05-14-05)
+// By Mark Follett (Mefy)
+// email: mef123@geocities.com
+// web: www.planetmedalofhonor.com/mefy
+// You are free to modify and redistribute as long as you keep these
+// credits.
+// **********************************************************************
+// Credits to Kaotik for base positions
+
+main:
+
+level.script = "maps/dm/MP_Holland_DM.scr"
+level.music = "MP_Holland_DM"
+
+// set scoreboard messages
+
+
+
+setcvar "g_scoreboardpic" "mp_holland_dm.tga"
+
+	switch (waitthread global/libmef/util.scr::get_gametype)
+	{
+		case "ctf":
+		case "ftctf":
+		case "dem":
+		case "ftdem":
+			waitthread setup_bases
+			break
+	}
+
+level waitTill prespawn
+
+exec global/ambient.scr
+exec global/door_locked.scr
+exec global/DMprecache.scr
+
+
+level waittill spawn
+thread EnlightModThread
+
+waitframe
+
+$world farplaneclipcolor "0.75 0.75 0.90"
+
+end
+
+
+setup_bases:
+	// Base positions by Kaotik
+	waitthread global/libmef/bases.scr::addbasepair "-852.85 -2560.87 0.13 90 SE Sector" "527.13 864.46 0.12 0 NW Sector"
+	waitthread global/libmef/bases.scr::addbasepair "-2189.87 827.07 12.33 90 SW Schoolhouse" "1328.87 -1809.02 0.13 180 NE Sector"
+end
+
+
+//-----------------------------------------------------------------------------
+//**********************MODS*****************************
+EnlightModThread:
+while (1)
+{
+	wait .2                                                                          // Infinite Loop Error Removal
+	for (local.i = 1; local.i < ($player.size + 1); local.i++)
+	{
+		local.player = $player[local.i]
+		if (local.player != NIL && local.player.dmteam != "spectator")
+		{
+			if ( getcvar (g_gametype) == "1")
+					local.player light 0 0 1 150                            // Free For All, All Players Blue
+			else
+			{
+				if (local.player.dmteam == "allies")
+						local.player light 0 1 1 150                        // Allies light green
+				else
+						local.player light 1 0 0 150                        // Nazi Flag is Red, so axis are too
+			}
+
+		}
+		else
+		{
+			local.player light 0 0 0 0		
+		}
+		// Possible glitch: selecting team but not weapon = Spectator with Spotlight
+	}
+}
+end

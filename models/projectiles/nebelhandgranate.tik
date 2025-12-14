@@ -1,0 +1,13 @@
+// The is the german smokegrenade used for secondary fire & by AIs
+TIKI
+
+$include models/projectiles/nebelhandgranate_base.txt
+
+init
+{
+	server
+	{
+		speed			600    //was at 700
+		minspeed		100
+	}
+}

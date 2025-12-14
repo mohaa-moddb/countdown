@@ -1,0 +1,145 @@
+main:
+
+level.script = "maps/dm/MP_verschneit_DM.scr"
+level.music = "MP_verschneit_DM"
+
+// set scoreboard messages
+// set scoreboard messages
+
+
+
+setcvar "g_scoreboardpic" "mp_verschneit_dm.tga"
+
+	switch (waitthread global/libmef/util.scr::get_gametype)
+	{
+		case "ctf":
+		case "ftctf":
+		case "dem":
+		case "ftdem":
+			waitthread setup_bases
+			break
+	}
+
+setcvar "g_scoreboardpic" "mp_verschneit_dm.tga"
+
+local.fixcheat = spawn script_model model models/static/indycrate.tik "origin" " -3130 -3320 300"
+local.fixcheat hide
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "515 -2385 350" "angles" "0 90 0" 
+local.object hide
+
+local.ffa_spawnspot = spawn info_player_deathmatch "origin" " -2423 -3610 40" "angle" " 180"
+local.ffa_spawnspot = spawn info_player_deathmatch "origin" " -2236 -3745 -39" "angle" " 180"
+local.ffa_spawnspot = spawn info_player_deathmatch "origin" " -2850 -2317 240" "angle" " 90"
+local.ffa_spawnspot = spawn info_player_deathmatch "origin"  " -2852 -2393 8" "angle" " -90"
+local.ffa_spawnspot = spawn info_player_deathmatch "origin" " -2144 -2455 26" "angle" " -45"
+local.ffa_spawnspot = spawn info_player_deathmatch "origin" " -1287 -2371 -287" "angle" " -45"
+local.ffa_spawnspot = spawn info_player_deathmatch "origin" " 128 -2232 -87" "angle" " 180"
+local.ffa_spawnspot = spawn info_player_deathmatch "origin" " -2123 -2473 26" 
+local.ffa_spawnspot = spawn info_player_deathmatch "origin" " -39 -3240 184" "angle" " 180"
+
+//block old spawnpoints
+local.object = spawn script_model "model" "models/static/rock_winter_large.tik" "origin" " 764 -1764 112" "angles" "0 90 0" 
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " 764 -1764 160" "angles" "0 90 0" 
+local.object hide
+
+local.object = spawn script_model "model" "models/static/lightpost_tripler_winter.tik" "origin" " -2955 -3445 8" 
+local.object notsolid
+local.clipbrush = spawn script_object "origin" " -2955 -3445 8" 
+local.clipbrush setsize ( -10 -10 0 ) ( 10 10 150 )
+local.clipbrush solid
+
+local.object = spawn script_model "model" "models/furniture/armchairposh.tik" "origin" "1242 -3328 136" "angles" "0 -45 0" 
+local.object notsolid
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " 1210 -3305 125" "angles" "0 90 0" 
+local.object hide
+
+local.object = spawn script_model "model" "models/static/lightpost_tripler_winter.tik" "origin" " -1520 -3400 -63" 
+local.object notsolid
+local.clipbrush = spawn script_object "origin" " -1520 -3400 -63"  
+local.clipbrush setsize ( -10 -10 0 ) ( 10 10 150 )
+local.clipbrush solid
+
+
+exec global/DMprecache.scr	
+level waitTill prespawn
+exec global/ambient.scr
+exec global/door_locked.scr
+$world farplane 5000
+thread EnlightModThread
+
+thread protect
+thread addstuff
+
+
+end
+////////
+setup_bases:
+	// Base positions by Kaotik
+	waitthread global/libmef/bases.scr::addbasepair "-3392.87 -1215.48 8.13 0 SW Sector" "-1027.89 -1311.13 -127.88 -90 Under W Bridge"
+end
+///////
+protect:
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -2362 140 8" "angles" "0 -90 0" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -2362 140 55" "angles" "0 -90 0" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -3368 -3124 0" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -3368 -3124 47" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -3368 -3124 94" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -3368 -3124 94" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -3200 -1344 8" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -3200 -1273 8" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -3200 -1273 55" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -3200 -1344 55" 
+local.object nodamage
+end
+
+addstuff: 
+local.object = spawn script_model "model" "models/lp_painting.tik" "origin" " 780 -2013 160" "angles" "0 180 0" 
+
+//get on roof
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -243 -1967 184" "angles" "0 90 0" 
+//block behind fence
+local.object = spawn script_model "model" "models/static/barbwire_long.tik" "origin" " 250 -3170 0" 
+local.object = spawn script_model "model" "models/static/barbwire_long.tik" "origin" " 250 -3000 0" 
+//block attic
+local.object = spawn script_model "model" "models/static/barbwire_long.tik" "origin" "300 -2950 480" 
+local.object hide
+end
+//**********************MODS*****************************
+EnlightModThread:
+while (1)
+{
+	wait .2                                                                          // Infinite Loop Error Removal
+	for (local.i = 1; local.i < ($player.size + 1); local.i++)
+	{
+		local.player = $player[local.i]
+		if (local.player != NIL && local.player.dmteam != "spectator")
+		{
+			if ( getcvar (g_gametype) == "1")
+					local.player light 0 0 1 150                            // Free For All, All Players Blue
+			else
+			{
+				if (local.player.dmteam == "allies")
+						local.player light 0 0 1 400                        // Allies light green
+				else
+						local.player light 1 0 1 400                        // Nazi Flag is Red, so axis are too
+			}
+
+		}
+		else
+		{
+			local.player light 0 0 0 0		
+		}
+		// Possible glitch: selecting team but not weapon = Spectator with Spotlight
+	}
+}
+end
+

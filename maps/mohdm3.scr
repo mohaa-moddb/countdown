@@ -1,0 +1,550 @@
+// REMAGEN
+// ARCHITECTURE: STAGGER
+// SCRIPTING: POWZER
+
+// **********************************************************************
+// Extended-Gametype Mapscript Version 1.2.2 (05-14-05)
+// By Mark Follett (Mefy)
+// email: mef123@geocities.com
+// web: www.planetmedalofhonor.com/mefy
+// You are free to modify and redistribute as long as you keep these
+// credits.
+// **********************************************************************
+
+main:
+
+// set scoreboard messages
+
+
+
+setcvar "g_scoreboardpic" "mohdm3"
+
+	switch (waitthread global/libmef/util.scr::get_gametype)
+	{
+		case "ctf":
+		case "ftctf":
+		case "dem":
+		case "ftdem":
+			waitthread setup_bases
+			break
+	}
+
+	level waittill prespawn
+	
+	//*** Precache Dm Stuff
+	exec global/DMprecache.scr
+	
+	level.script = maps/dm/mohdm3.scr
+	exec global/ambient.scr mohdm3
+	
+thread global/door_locked.scr::lock
+
+	level waittill spawn
+	thread EnlightModThread
+	if (level.mef_baseversion == "sh" || level.mef_baseversion == "bt")
+	{
+		$world commanddelay 0 farclipoverride -1
+	}
+
+
+//German equipment and supplies
+
+	local.opeld = spawn script_object 
+	local.opeld model "vehicles/opeltruck_d.tik"
+	local.opeld.origin = ( 3952 -3982 2)
+	local.opeld.angles = (0 93 0)
+	local.opeld solid
+        local.opeld nodamage
+	local.opeld immune explosion
+	local.opeld immune bash
+
+
+    	 local.jeep = spawn script_model	
+	 local.jeep model "vehicles/jeep.tik"
+	 local.jeep.origin = ( 1030 -1453 -63 )
+	 local.jeep.angles = ( -2 280 -1 )
+	 local.jeep solid
+	 local.jeep immune explosion
+	 local.jeep immune bash
+
+
+        local.jeep = spawn script_object 
+	local.jeep model "vehicles/jeep.tik"
+	local.jeep.origin = (694 -414 -70)
+	local.jeep.angles = (0 235 0)
+	local.jeep solid
+                local.jeep nodamage
+	local.jeep immune explosion
+	local.jeep immune bash
+
+
+                local.30cal = spawn models/vehicles/jeep_30cal.tik
+		local.30cal.origin = (731 -370 -35)
+		local.30cal.angles = ( 0 270 0)
+
+
+                local.mg42ammo = spawn script_model
+	local.mg42ammo model "static/30cal_crate.tik"
+	local.mg42ammo.origin = (715 -320 -14)
+	local.mg42ammo.angles = (0 20 0)
+	local.mg42ammo solid
+
+
+                local.mg421 = spawn models/statweapons/mg42_gun.tik
+	local.mg421.origin = (840 -202 8)
+	local.mg421.angle = 270
+                local.mg421 yawCenter -90
+                local.mg421 maxyawoffset 50
+	local.mg42Bipod = spawn script_model
+	local.mg42Bipod model "statweapons/mg42_bipod.tik"
+	local.mg42Bipod.origin = (840 -202 8)
+	local.mg42Bipod.angles = ( 0 270 0)
+ 	local.mg42Bipod solid
+
+
+                local.mg42ammo = spawn script_model
+	local.mg42ammo model "static/mg42ammoboxwbelt.tik"
+	local.mg42ammo.origin = (782 -207 -8)
+	local.mg42ammo.angles = (0 260 0)
+	local.mg42ammo solid
+                 
+
+                local.AmmoGrenade1 = spawn models/items/item_grenade_ammobox.tik
+	local.AmmoGrenade1.origin = (639 -470 -9)
+	local.AmmoGrenade1.angles = ( 0 20 0 )
+
+
+
+
+//allied sandbags
+                
+                //first line vetical
+	local.sand = spawn script_model
+	local.sand model "static/sandbag_longsegment.tik"
+	local.sand.origin = (1065 -226 -73)
+	local.sand.angle = 180
+	local.sand solid
+	local.sand nodamage
+	local.sand immune explosion
+	local.sand immune bash
+                
+                //secondline hrizontal
+	local.sand = spawn script_model
+	local.sand model "static/sandbag_longsegment.tik"
+	local.sand.origin = (1240 -894 -73)
+	local.sand.angle = 90
+	local.sand solid
+	local.sand nodamage
+	local.sand immune explosion
+	local.sand immune bash	
+
+                //third line vertical extension
+	local.sand = spawn script_model
+	local.sand model "static/sandbag_link_main.tik"
+	local.sand.origin = (1065 -540 -73)
+	local.sand.angle = 180
+	local.sand solid
+	local.sand nodamage
+	local.sand immune explosion
+	local.sand immune bash	
+
+    	//third line vertical extension
+	local.sand = spawn script_model
+	local.sand model "static/sandbag_link_main.tik"
+	local.sand.origin = (1065 -644 -73)
+	local.sand.angle = 180
+	local.sand solid
+	local.sand nodamage
+	local.sand immune explosion
+	local.sand immune bash	
+
+	//third line vertical extension
+	local.sand = spawn script_model
+	local.sand model "static/sandbag_link_main.tik"
+	local.sand.origin = (1065 -748 -73)
+	local.sand.angle = 180
+	local.sand solid
+	local.sand nodamage
+	local.sand immune explosion
+	local.sand immune bash	
+
+	//third line vertical extension
+	local.sand = spawn script_model
+	local.sand model "static/sandbag_link_main.tik"
+	local.sand.origin = (1065 -834 -73)
+	local.sand.angle = 180
+	local.sand solid
+	local.sand nodamage
+	local.sand immune explosion
+	local.sand immune bash	
+
+
+//misc allied and axis stuff
+	
+	local.dresser = spawn script_model
+	local.dresser model "static/static_nazibanner2.tik"
+	local.dresser.origin = (3860 -2778 150)
+	local.dresser.angle = 180
+	
+	local.dresser = spawn script_model
+	local.dresser model "static/exp_crate2.tik"
+	local.dresser.origin = (1116 -720 -70)
+	local.dresser.angle = 180
+
+	local.dresser = spawn script_model
+	local.dresser model "static/exp_crate3a.tik"
+	local.dresser.origin = (1132 -681 -70)
+	local.dresser.angle = 90
+
+	local.dresser = spawn script_model
+	local.dresser model "static/exp_crate3a.tik"
+	local.dresser.origin = (1107 -597 -70)
+	local.dresser.angle = 40
+
+	local.dresser = spawn script_model
+	local.dresser model "static/exp_crate3a.tik"
+	local.dresser.origin = (1107 -597 -51)
+	local.dresser.angle = 120
+
+	local.dresser = spawn script_model
+	local.dresser model "static/exp_crate2.tik"
+	local.dresser.origin = (1116 -720 -52)
+	local.dresser.angle = 15
+
+
+
+//left side
+	local.dresser1 = spawn script_model
+	local.dresser1 model "static/barbwire_tetra_post.tik"
+	local.dresser1.origin = (4549 -1494 4)
+	local.dresser1.angle = -85
+
+	local.dresser1 = spawn script_model
+	local.dresser1 model "static/barbwire_two_post.tik"
+	local.dresser1.origin = (4549 -1600 13)
+	local.dresser1.angle = 180
+
+//right side
+	local.dresser1 = spawn script_model
+	local.dresser1 model "static/barbwire_tetra_post.tik"
+	local.dresser1.origin = (4549 -2124 4)
+	local.dresser1.angle = 85
+
+	local.dresser1 = spawn script_model
+	local.dresser1 model "static/barbwire_two_post.tik"
+	local.dresser1.origin = (4549 -2070 13)
+	local.dresser1.angle = 180
+
+//axis truck in back
+	local.opeld2 = spawn script_object 
+	local.opeld2 model "vehicles/opeltruckgreen_d.tik"
+	local.opeld2.origin = (5744 -2950 4)
+	local.opeld2.angles = (0 35 0)
+	local.opeld2 solid
+        local.opeld2 nodamage
+	local.opeld2 immune explosion
+	local.opeld2 immune bash
+
+	local.dresser = spawn script_model
+	local.dresser model "static/fragcrate1.tik"
+	local.dresser.origin = (5640 -3255 2)
+	local.dresser.angle = 120
+
+	local.dresser = spawn script_model
+	local.dresser model "static/trunk.tik"
+	local.dresser.origin = (5784 -3220 2)
+	local.dresser.angle = 90
+
+
+	local.dresser = spawn script_model
+	local.dresser model "static/rations_sh.tik"
+	local.dresser.origin = (5783 -3048 2)
+	local.dresser.angle = 147
+	local.dresser solid
+
+	local.dresser = spawn script_model
+	local.dresser model "static/signpost_caen.tik"
+	local.dresser.origin = (4408 -2001 4)
+	local.dresser.angle = 120
+	local.dresser solid
+
+	local.dresser = spawn script_model
+	local.dresser model "static/static_naziflag2.tik"
+	local.dresser.origin = (4505 -1983 75)
+	local.dresser.angle = 120
+	
+//barb wire on the other side	<-------------------------------------------------
+	local.dresser1 = spawn script_model
+	local.dresser1 model "static/barbwire_two_post.tik"
+	local.dresser1.origin = (4436 -3638 15)
+	local.dresser1.angle = 180
+
+	local.dresser = spawn script_model
+	local.dresser model "static/static_naziflag2.tik"
+	local.dresser.origin = (4396 -3724 75)
+	local.dresser.angle = 60
+
+	local.dresser = spawn script_model
+	local.dresser model "static/bunkerbench.tik"
+	local.dresser.origin = (4782 -2120 8)
+	local.dresser.angle = 90
+	local.dresser solid
+
+
+
+//bunker <----------------------------------------------------------------
+        
+
+
+
+
+//allied weapons 
+
+	local.dresser = spawn script_model
+	local.dresser model "static/bunkerbench.tik"
+	local.dresser.origin = (858 30 -65)
+	local.dresser.angle = 90
+	local.dresser solid
+
+	local.mp44 = spawn models/weapons/m1_garand.tik
+	local.mp44.origin = (810 13 -37)
+	local.mp44.angle = 90
+
+	local.mp44 = spawn models/weapons/m1_garand.tik
+	local.mp44.origin = (817 13 -37)
+	local.mp44.angle = 90
+
+	local.mp44 = spawn models/weapons/G43.tik
+	local.mp44.origin = (824 13 -37)
+	local.mp44.angle = 90
+
+	local.mp44 = spawn models/weapons/G43.tik
+	local.mp44.origin = (831 13 -37)
+	local.mp44.angle = 90
+
+	local.mp44 = spawn models/weapons/bar.tik
+	local.mp44.origin = (838 13 -37)
+	local.mp44.angle = 90
+
+	local.mp44 = spawn models/weapons/bar.tik
+	local.mp44.origin = (845 13 -37)
+	local.mp44.angle = 90
+
+
+	local.mp44 = spawn models/weapons/enfield.tik
+	local.mp44.origin = (852 13 -37)
+	local.mp44.angle = 90
+
+
+	local.mp44 = spawn models/weapons/enfield.tik
+	local.mp44.origin = (859 13 -37)
+	local.mp44.angle = 90
+
+
+	local.mp44 = spawn models/weapons/ppsh_smg.tik
+	local.mp44.origin = (866 13 -37)
+	local.mp44.angle = 90
+
+	local.mp44 = spawn models/weapons/ppsh_smg.tik
+	local.mp44.origin = (873 13 -37)
+	local.mp44.angle = 90
+
+
+	local.mp44 = spawn models/weapons/sten.tik
+	local.mp44.origin = (880 13 -37)
+	local.mp44.angle = 90
+
+
+	local.mp44 = spawn models/weapons/sten.tik
+	local.mp44.origin = (887 13 -37)
+	local.mp44.angle = 90
+
+
+
+//new axis side weapons
+
+
+	local.pan1 = spawn script_model
+	local.pan1 model "vehicles/panzer_iv.tik"
+	local.pan1.origin = ( 3150 -3250 5 )
+	local.pan1.angles = (0 100 0)
+	local.pan1 solid
+
+
+	//Motorcycle
+	local.bmw = spawn script_model
+	local.bmw model "vehicles/bmwbike.tik"
+	local.bmw.origin = (5000 -4032 6)
+	local.bmw.angles = ( -1 200 2 )
+	local.bmw solid
+//<------------------------------------------------------------
+
+
+        local.dresser = spawn script_model
+	local.dresser model "static/bunkertable.tik"
+	local.dresser.origin = (3590 -3056 8)
+	local.dresser.angles = ( 0 0 0 )
+	local.dresser solid
+
+ //StG 44 on shelf in mid fortress
+	local.mp44 = spawn models/weapons/kar98_mortar.tik
+	local.mp44.origin = (3592 -3084 66)
+	local.mp44.angles = ( 0 0 0 )
+   //StG 44 on shelf in mid fortress
+	local.mp44 = spawn models/weapons/kar98_mortar.tik
+	local.mp44.origin = (3592 -3074 66)
+	local.mp44.angles = ( 0 0 0 )
+ //StG 44 on shelf in mid fortress
+	local.mp44 = spawn models/weapons/kar98_mortar.tik
+	local.mp44.origin = (3592 -3064 66)
+	local.mp44.angles = ( 0 0 0 )
+ //StG 44 on shelf in mid fortress
+	local.mp44 = spawn models/weapons/shotgun.tik
+	local.mp44.origin = (3592 -3054 66)
+	local.mp44.angles = ( 0 0 0 )
+ //StG 44 on shelf in mid fortress
+	local.mp44 = spawn models/weapons/shotgun.tik
+	local.mp44.origin = (3592 -3044 66)
+	local.mp44.angles = ( 0 0 0 )
+ //StG 44 on shelf in mid fortress
+	local.mp44 = spawn models/weapons/mp44.tik
+	local.mp44.origin = (3592 -3034 66)
+	local.mp44.angles = ( 0 0 0 )
+ //StG 44 on shelf in mid fortress
+	local.mp44 = spawn models/weapons/mp44.tik
+	local.mp44.origin = (3592 -3024 66)
+	local.mp44.angles = ( 0 0 0 )
+
+
+                       
+//mg42 on tower
+	local.mg421 = spawn models/statweapons/mg42_gun.tik
+	local.mg421.origin = ( 3563.4 -1591.2 280.1)
+	local.mg421.angle = -120
+                local.mg421 yawCenter -120
+                local.mg421 maxyawoffset 45
+
+
+		local.mg42Bipod = spawn script_model
+		local.mg42Bipod model "statweapons/mg42_bipod.tik"
+		local.mg42Bipod.origin = ( 3563.4 -1591.2 280.1)
+		local.mg42Bipod.angle = -120
+ 		local.mg42Bipod solid
+
+                                local.mg42ammo = spawn script_model
+		local.mg42ammo model "static/mg42ammoboxwbelt.tik"
+		local.mg42ammo.origin = ( 3608.4 -1601.2 200.1)
+		local.mg42ammo.angles = (0 90 0)
+		local.mg42ammo solid
+
+
+                local.sand = spawn script_model
+	local.sand model "static/sandbag_link_main.tik"
+	local.sand.origin = (3438 -2699 0)
+	local.sand.angles = (0 -180 0)
+	local.sand solid
+	local.sand nodamage
+	local.sand immune explosion
+	local.sand immune bash
+
+                local.sand = spawn script_model
+	local.sand model "static/sandbag_link_main.tik"
+	local.sand.origin = (3438 -2800 0)
+	local.sand.angles = (0 -180 0)
+	local.sand solid
+	local.sand nodamage
+	local.sand immune explosion
+	local.sand immune bash	
+
+                local.sand = spawn script_model
+	local.sand model "static/sandbag_link_main.tik"
+	local.sand.origin = (3438 -2900 0)
+	local.sand.angles = (0 -180 0)
+	local.sand solid
+	local.sand nodamage
+	local.sand immune explosion
+	local.sand immune bash
+
+
+
+
+// German body
+
+        local.dresser = spawn script_model
+	local.dresser model "static/body_us01.tik"
+	local.dresser.origin = (3825 -3911 6)
+	local.dresser.angles = ( 0 -180 0 )
+	local.dresser notsolid
+
+        //local.dresser = spawn script_model
+	//local.dresser model "static/body_us03.tik"
+	//local.dresser.origin = (2659 -2720 270)
+	//local.dresser.angles = ( 0 270 0 )
+	//local.dresser notsolid
+
+    	
+        
+ 
+
+end
+
+//-----------------------------------------------------------------------------
+
+
+setup_bases:
+	waitthread global/libmef/util.scr::read_gametype_settings
+
+	// common bases for dem and ctf
+	waitthread global/libmef/bases.scr::addbasepair "969 -1057 -71.88 -90 S: Euro Car" "3221 -2787 2.58 90 N: Delivery Truck" car deliverytruck
+	waitthread global/libmef/bases.scr::addbasepair "1514 -2663 0.13 90 SE: Clock Tower" "3875 -1199 16.13 180 NW: Library" indycrate librarytable
+	waitthread global/libmef/bases.scr::addbasepair "1887 -615 -5.88 -90 W: Gallery Radio Station" "2366 -2027 50 0 E: Gallery Power Box" radiostation powerpanel
+	waitthread global/libmef/bases.scr::addbasepair "1323 150 -63.88 -75 SW: Motorcycle" "3448 -3786 0.46 -8 NE: Mercedes" bmwbike mercedes
+	waitthread global/libmef/bases.scr::addbasepair "544 -1493 -51.26 180 S: Explosives Cache" "3747 -2309 8.13 -125 C: Explosives Cache" tntcrate tntcrate
+	
+	// additional bases for ctf only
+	if (level.mef_gametype == "ctf" || level.mef_gametype == "ftctf")
+	{
+		waitthread global/libmef/bases.scr::addbasepair "783 -1027 -63.88 0" "3360 -2778 8.13 180"
+	}
+
+	// additional bases for dem only
+	if (level.mef_gametype == "dem" || level.mef_gametype == "ftdem")
+	{
+		waitthread global/libmef/bases.scr::addbasepair "1693 -1705 144.13 0 C: Gallery Dining Room" "2398 -1705 144.13 -180 C: Gallery Dining Room" voodoo voodoo
+
+		if (level.mef_deepbases)
+		{
+			waitthread global/libmef/bases.scr::addbasepair "711 -451 -68.89 -27 S: Halftrack" "5650 -2458 0.13 110 N: Halftrack" m3 sdkfz ( 1 333 0 )
+			waitthread global/libmef/bases.scr::addbasepair "758 418 214.13 -90 S: Radio" "5019 -3366 96.13 180 N: Enigma Device" radio enigma
+		}
+	}
+end
+//**********************MODS*****************************
+EnlightModThread:
+while (1)
+{
+	wait .2                                                                          // Infinite Loop Error Removal
+	for (local.i = 1; local.i < ($player.size + 1); local.i++)
+	{
+		local.player = $player[local.i]
+		if (local.player != NIL && local.player.dmteam != "spectator")
+		{
+			if ( getcvar (g_gametype) == "1")
+					local.player light 0 0 1 150                            // Free For All, All Players Blue
+			else
+			{
+				if (local.player.dmteam == "allies")
+						local.player light 0 1 1 150                        // Allies light green
+				else
+						local.player light 1 0 0 150                        // Nazi Flag is Red, so axis are too
+			}
+
+		}
+		else
+		{
+			local.player light 0 0 0 0		
+		}
+		// Possible glitch: selecting team but not weapon = Spectator with Spotlight
+	}
+}
+end

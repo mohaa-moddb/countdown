@@ -1,0 +1,11 @@
+TIKI
+
+setup
+{
+	scale 0.6	// Needs to be unnaturally large so it is visible
+	path models/projectiles/nebelhandgranate
+	skelmodel nebelhandgranate.skd
+	surface all shader germ_smoke_gren
+}
+
+$include models/fx/SmokeGrenadeExplosionGerman_base.txt

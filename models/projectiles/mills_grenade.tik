@@ -1,0 +1,14 @@
+// The is the Mills grenade used for secondary fire & by AIs
+TIKI
+
+$include models/projectiles/mills_grenade_base.txt
+
+init
+{
+	server
+	{
+		speed			600    //was at 850
+		minspeed		100
+		minlife			0.6
+	}
+}

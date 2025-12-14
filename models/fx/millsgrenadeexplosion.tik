@@ -1,0 +1,33 @@
+TIKI
+setup
+{
+	scale 1.0
+	path models/fx/dummy
+	skelmodel dummy2.skd
+}
+ 
+init
+{
+	server  
+	{
+		classname Explosion
+		rendereffects +dontdraw
+		notsolid
+		radiusdamage 125
+		radius 375
+		meansofdeath grenade
+		life 0.1
+	}
+}
+
+animations
+{
+	idle dummy2.skc
+	{
+		server    
+		{
+			// make the explosion effect
+			first explosioneffect grenade
+		}
+	}
+}

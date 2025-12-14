@@ -1,0 +1,416 @@
+main:
+
+// set scoreboard messages
+
+
+setcvar "g_scoreboardpic" "mohdm7"
+
+	switch (waitthread global/libmef/util.scr::get_gametype)
+	{
+		case "ctf":
+		case "ftctf":
+		case "dem":
+		case "ftdem":
+			waitthread global/libmef/spawn.scr::spawnblock_begin
+			waitthread setup_bases
+			break
+
+		case "ft":
+		case "rbm":
+			waitthread global/libmef/spawn.scr::spawnblock_begin
+			break
+	}
+
+
+
+
+level waittill prespawn
+exec global/DMprecache.scr
+exec global/door_locked.scr::lock
+level.script = maps/dm/mohdm7.scr
+exec global/ambient.scr mohdm7
+level waittill spawn
+$world farclipoverride -1
+//-----------------------------------------------------------------------------
+
+thread useable
+thread addstuff
+thread jump1
+thread doorway1
+thread crusher
+thread ladder
+thread ladder2
+thread EnlightModThread
+
+end
+//-----------------------------------------------------------------------------
+
+
+setup_bases:
+	if (level.mef_alliedspawnregion == "north")
+	{
+		// common bases for dem and ctf
+		waitthread global/libmef/bases.scr::addbasepair "925 -1224 -287.88 90 NE: Cable Spool" "-2944 2512 64.13 90 SW: V2 Rocket" cablespool v2rocket
+		waitthread global/libmef/bases.scr::addbasepair "1488 -1220 24.13 90 NE: Bunker Stove" "-2935 2520 284.13 90 SW: V2 Gantry Crane" bunkerstove crane
+		waitthread global/libmef/bases.scr::addbasepair "415 1745 -135.88 0 NW: Allied Barracks" "-2035 967 0.13 180 S: Mosque Prayer Room" bunkbed bunkbed
+		waitthread global/libmef/bases.scr::addbasepair "-140 -592 -199.88 90 CNE: Allied Lockers" "-1500 953 -103 180 CSW: Axis Files" lockers bigfilecab
+		waitthread global/libmef/bases.scr::addbasepair "-1135 -639 -228.75 -135 E: Wicker Basket" "-743 2510 -117.00 -135 W: Ceramic Pot" wickerbasket ceramicpot
+
+		// additional bases for ctf only
+		if (level.mef_gametype == "ctf" || level.mef_gametype == "ftctf")
+		{
+			waitthread global/libmef/bases.scr::addbasepair "1240 -96 -59.88 180" "-3144 2749 64.13 0"
+		}
+	} else
+	{
+		// common bases for dem and ctf
+		waitthread global/libmef/bases.scr::addbasepair "-2176 949 284.13 90 S: Radar Dish" "757 -31 -151.88 -45 N: V2 Rocket" radardish v2rocket
+		waitthread global/libmef/bases.scr::addbasepair "-3120 1314 314.13 -90 S: Mosque Radio Room" "757 -31 -151.88 180 N: V2 Gantry Crane" radiostation crane
+		waitthread global/libmef/bases.scr::addbasepair "-2035 967 0.13 180 S: Mosque Prayer Room" "415 1745 -135.88 0 NW: Axis Barracks" bunkbed bunkbed
+		waitthread global/libmef/bases.scr::addbasepair "-1500 953 -103 180 CSW: Allied Files" "-140 -592 -199.88 90 CNE: Axis Lockers" bigfilecab lockers
+		waitthread global/libmef/bases.scr::addbasepair "-743 2510 -117.00 -135 W: Ceramic Pot" "-1135 -639 -228.75 -135 E: Wicker Basket" ceramicpot wickerbasket
+		
+		// additional bases for ctf only
+		if (level.mef_gametype == "ctf" || level.mef_gametype == "ftctf")
+		{
+			waitthread global/libmef/bases.scr::addbasepair "-3144 2749 64.13 0" "1240 -96 -59.88 180"
+		}
+	}
+end
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+useable:
+local.health = spawn "models/items/dm_50_healthbox.tik" "origin" " -12 -670 160"
+local.health = spawn "models/items/dm_50_healthbox.tik" "origin" " 19 -1355 176" "angles" "0 90 0"
+local.health = spawn "models/items/dm_50_healthbox.tik" "origin" "1421 532 24" 
+
+local.weap = spawn "models/weapons/kar98_mortar.tik" "origin" "478 -1544 240" "angles" "180 90 0"
+local.weap = spawn "models/weapons/shotgun.tik" "origin" " 180 1561 -80" "angles" " -90 0 0" "wait" "20"
+
+local.mg42 = spawn "models/statweapons/mg42_bipod_nonstatic.tik" "origin" "1275 -94 85" "angles" "0 180 0" 
+local.mg42 = spawn "models/statweapons/mg42_gun.tik" "origin" "1274 -95.5 87" "angles" "0 180 0" 
+local.mg42 yawcenter 180
+local.mg42 maxyawoffset 65
+
+local.mg42 = spawn "models/statweapons/mg42_gun.tik" "origin" "417 1357 172" "angles" "0 -90 0" 
+local.mg42 yawcenter -90
+local.mg42 maxyawoffset 65
+end
+
+addstuff:
+//upper room
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -60 -265 40" "angles" "0 90 0"
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -60 -265 87" "angles" "0 90 0"
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -60 -265 134" "angles" "0 90 0"
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -60 -218 40" "angles" "0 90 0"
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -60 -218 87" "angles" "0 90 0"
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" " -60 -171 40" "angles" "0 90 0"
+local.crate = spawn script_model model models/static/bunkerbench.tik "origin" " -11 -240 201"
+local.crate = spawn script_model model models/static/bunkerbench.tik "origin" " -11 -136 201"
+local.crate = spawn script_model model models/static/bunkerbench.tik "origin" " -11 -32 201"
+local.crate = spawn script_model model models/static/bunkerbench.tik "origin" " -11 72 201"
+
+//ramp to jumppad
+local.crate = spawn script_model model models/static/bunkerbench.tik "origin" "273 -685 -87" "angles" "0 0 -45"
+
+//cover
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "35 -92 -239" "angles" "0 90 0"
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "35 -92 -192" "angles" "0 90 0"
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "35 -92 -145" "angles" "0 90 0"
+local.crate nodamage
+
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "220 -430 -262" "angles" "0 90 0"
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "220 -430 -215" "angles" "0 90 0"
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "220 -430 -168" "angles" "0 90 0"
+local.crate nodamage
+
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "1268 -807 52" "angles" "0 90 0"
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "1268 -807 99" "angles" "0 90 0"
+local.object nodamage
+
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "692 -870 52" "angles" "0 90 0" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "692 -870 99" "angles" "0 90 0" 
+local.object nodamage
+
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "93 1752 -84" "angles" "0 90 0"
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "93 1752 -37" "angles" "0 90 0"
+local.object nodamage
+
+
+//rooftop1
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "445 -1396 167" "angles" "0 90 0"
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "374 -1396 167" "angles" "0 90 0"
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "374 -1396 214" "angles" "0 90 0"
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "160 -1396 167" "angles" "0 90 0"
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "160 -1396 214" "angles" "0 90 0"
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "89 -1396 167" "angles" "0 90 0"
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "18 -1396 167" "angles" "0 90 0"
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "18 -1396 214" "angles" "0 90 0"
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "-53 -1396 167" "angles" "0 90 0"
+local.crate nodamage
+local.crate = spawn script_model "model" "models/static/indycrate.tik" "origin" "-124 -1396 167" "angles" "0 90 0"
+local.crate nodamage
+
+local.object = spawn script_model "model" "models/static/bunkerbench.tik" "origin" "262 -1391 140" "angles" "0 90 0" "scale" "1.5"
+local.sand = spawn script_model "model" "models/static/sandbag_longsegment.tik" "origin" "197 -1710 168" "angles" "0 90 0" "scale" "1.5"
+local.sand = spawn script_model "model" "models/static/sandbag_longsegment.tik" "origin" "197 -1710 204" "angles" "0 90 0" "scale" "1.5"
+
+//inside
+local.object = spawn script_model "model" "models/static/sandbag_longsegment.tik" "origin" "200 1745 -135" "angles" "0 90 0"
+local.object nodamage
+local.object = spawn script_model "model" "models/static/sandbag_link_main.tik" "origin" "440 1745 -99" "angles" "0 90 0"
+local.object nodamage
+local.object = spawn script_model "model" "models/static/sandbag_link_topcap.tik" "origin" "362 1745 -99" "angles" "0 90 0" 
+local.object nodamage
+
+
+//rooftop2
+local.floor = spawn script_model "model" "models/static/cratelid1.tik" "origin" "1031 654 393" "angles" "180 0 0" "scale" "10" 
+local.floor = spawn script_model "model" "models/static/cratelid1.tik" "origin" "1178.5 654 393" "angles" "180 0 0" "scale" "10" 
+local.floor = spawn script_model "model" "models/static/cratelid1.tik" "origin" "1326 654 393" "angles" "180 0 0" "scale" "10" 
+local.floor = spawn script_model "model" "models/static/cratelid1.tik" "origin" "1473.5 654 393" "angles" "180 0 0" "scale" "10" 
+local.floor = spawn script_model "model" "models/static/cratelid1.tik" "origin" "1031 828 393" "angles" "180 0 0" "scale" "10" 
+local.floor = spawn script_model "model" "models/static/cratelid1.tik" "origin" "1178.5 828 393" "angles" "180 0 0" "scale" "10" 
+local.floor = spawn script_model "model" "models/static/cratelid1.tik" "origin" "1326 828 393" "angles" "180 0 0" "scale" "10" 
+local.floor = spawn script_model "model" "models/static/cratelid1.tik" "origin" "1473.5 828 393" "angles" "180 0 0" "scale" "10" 
+
+local.sand = spawn script_model "model" "models/static/sandbag_link_main.tik" "origin" "1475 850 390" 
+local.sand = spawn script_model "model" "models/static/sandbag_link_main.tik" "origin" "1475 850 426" 
+local.sand = spawn script_model "model" "models/static/sandbag_link_main.tik" "origin" "1475 850 462" 
+
+local.sand = spawn script_model "model" "models/static/sandbag_longsegment.tik" "origin" "1270 900 390" "angles" "0 -90 0" 
+local.sand = spawn script_model "model" "models/static/sandbag_longsegment.tik" "origin" "1270 900 426" "angles" "0 -90 0" 
+local.sand = spawn script_model "model" "models/static/sandbag_longsegment.tik" "origin" "1270 900 462" "angles" "0 -90 0" 
+
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "977 885 390" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "977 885 437" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "977 885 484" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "977 814 390" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "977 605 390" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "977 605 437" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "977 676 390" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "1421 594 390" "angles" "0 90 0" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "1421 594 437" "angles" "0 90 0" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "1350 594 390" "angles" "0 90 0" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "1200 594 390" "angles" "0 90 0" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "1200 594 437" "angles" "0 90 0" 
+local.object nodamage
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" "1129 594 390" "angles" "0 90 0" 
+local.object nodamage
+
+//small step to access doorway1
+local.step = spawn script_model "model" "models/static/bunkerbench.tik" "origin" " -410 1269 -85" "angles" "0 90 0" 
+//step to awning
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -1564 1167 184" "angles" "0 90 0" 
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -1529 1167 231" "angles" "0 90 0" 
+end
+
+jump1:
+local.beam = spawn func_beam "targetname" "pad1" origin (281 -998 -31) endpoint (281 -1018 -31)
+local.beam = spawn func_beam "targetname" "pad1" origin (281 -1018 -31) endpoint (261 -1018 -31)
+local.beam = spawn func_beam "targetname" "pad1" origin (261 -1018 -31) endpoint (261 -998 -31)
+local.beam = spawn func_beam "targetname" "pad1" origin (261 -998 -31) endpoint (281 -998 -31)
+
+$pad1 color ( 0 1 0 )
+$pad1 scale .25
+$pad1 numsegments 1
+$pad1 activate
+
+local.trig = spawn trigger_multiple origin (271 -1008 -31)
+local.trig setsize ( -10 -10 0) ( 10 10 5)
+local.trig setThread launchme1
+end
+
+launchme1:
+parm.other jumpxy 270 0 110
+end
+
+doorway1:
+local.beam = spawn func_beam origin ( -55 961 -30) endpoint ( -55 961 60) "targetname" "doorway1"
+local.beam = spawn func_beam origin ( -95 961 -30) endpoint ( -95 961 60) "targetname" "doorway1"
+local.beam = spawn func_beam origin ( -55 961 60) endpoint ( -95 961 60)  "targetname" "doorway1"
+local.beam = spawn func_beam origin ( -55 961 -30) endpoint ( -95 961 -30)  "targetname" "doorway1"
+
+$doorway1 color ( 0 1 0 )
+$doorway1 scale .25
+$doorway1 numsegments 1
+$doorway1 activate
+
+local.trig = spawn trigger_multiple origin ( -75 961 -30) 
+local.trig setsize ( -20 -5 50 ) ( 20 5 90 )
+
+while(1)
+{
+local.trig waittill trigger
+local.p = parm.other
+local.p nodamage
+local.p.viewangles = ( 0 180 0 )
+local.p tele ( 1450 680 380)
+$doorway1 color (1 0 0)
+wait 1
+local.p takedamage
+wait 30
+$doorway1 color (0 1 0)
+}
+end
+
+crusher:
+local.smash = spawn script_object "origin" ( -1150 1268 -100 ) 
+local.smash setsize ( -70 -100 -5) ( 70 100 20) 
+local.smash notsolid
+
+while(1){
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -1115 1315 60" "angles" "0 90 0" "targetname" "crusher"
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -1186 1315 60" "angles" "0 90 0" "targetname" "crusher"
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -1115 1260 60" "angles" "0 90 0" "targetname" "crusher"
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -1186 1260 60" "angles" "0 90 0" "targetname" "crusher"
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -1115 1205 60" "angles" "0 90 0" "targetname" "crusher"
+local.object = spawn script_model "model" "models/static/indycrate.tik" "origin" " -1186 1205 60" "angles" "0 90 0" "targetname" "crusher"
+
+local.shootme = spawn trigger_multiple "spawnflags" "128" 
+local.shootme.origin =  ( -1150 1260 60 )
+local.shootme setsize ( -70 -100 -5) ( 70 100 50) 
+local.shootme immune grenade
+local.shootme immune fire
+local.shootme waitTill trigger
+local.shooter = parm.other
+
+$crusher physics_on
+wait .5
+
+for(local.s=1;local.s<=$player.size;local.s++)
+      {if($player[local.s] isTouching local.smash) {$player[local.s] damage local.shooter 200 local.shooter (0 0 0) (0 0 0) (0 0 0) 0 1 2 -1}}
+wait 5
+$crusher delete
+}
+end
+
+//*********************************************************************************
+
+ladder:
+spawn script_object "targetname" "ladderbrush1" "origin" "( 250 -490 -213)"
+$ladderbrush1.model = "static/static_nazibanner2.tik"
+$ladderbrush1 hide	
+$ladderbrush1.angles = ( 0 -7 0 )
+$ladderbrush1 setsize ( 0 0 0) ( 8 32 105 )
+$ladderbrush1 solid
+
+spawn script_object "targetname" "tl1" "classname" "func_ladder" "origin" "( 250 -490 -213)" "angle" "0" "model" "*ladderbrush1" 
+$tl1 setsize ( 0 0 0) ( 8 32 105 ) 
+
+local.side = spawn func_beam origin ( 250 -506 -263 ) endpoint (250 -506 -105 ) targetname "ladder1"
+local.side = spawn func_beam origin ( 250 -474 -263 ) endpoint (250 -474 -105 ) targetname "ladder1"
+
+for(local.r= -263;local.r< -105;local.r += 16)
+      {local.rung = spawn func_beam origin ( 250 -506 local.r ) endpoint ( 250 -474 local.r ) targetname "rung1"}
+
+$ladder1 maxoffset 0
+$ladder1 tileshader "textures/barrel/blackbarrel"
+$ladder1 scale 2
+$ladder1 doactivate
+
+$rung1 maxoffset 0
+$rung1 tileshader "textures/barrel/blackbarrel"
+$rung1 scale 1
+$rung1 doactivate
+
+while(1)
+{for(local.p=1;local.p<=$player.size;local.p++)
+      {if($player[local.p] isTouching $ladderbrush1 && $player[local.p].origin[2] != $player[local.p].ladder) 
+         {$player[local.p].ladder = $player[local.p].origin[2]
+           $player[local.p] playsound snd_step_metal1}}
+wait .5} 
+end
+
+//*********************************************************************************
+
+ladder2:
+spawn script_object "targetname" "ladderbrush2" "origin" "( -55 1879 27)"
+$ladderbrush2.model = "static/static_nazibanner2.tik"
+$ladderbrush2 hide	
+$ladderbrush2.angles = ( 0 7 0 )
+$ladderbrush2 setsize ( -8 0 0) ( 0 32 101 )
+$ladderbrush2 solid
+
+spawn script_object "targetname" "tl2" "classname" "func_ladder" "origin" "( -55 1879 27)" "angle" "180" "model" "*ladderbrush2" 
+$tl2 setsize ( -8 0 0) ( 0 32 101 ) 
+
+local.side = spawn func_beam origin ( -55 1864 -38 ) endpoint ( -55 1864 128 ) targetname "ladder1"
+local.side = spawn func_beam origin ( -55 1896 -23 ) endpoint ( -55 1896 128 ) targetname "ladder1"
+
+for(local.r= -23;local.r< 128;local.r += 16)
+      {local.rung = spawn func_beam origin ( -55 1864 local.r ) endpoint ( -55 1896 local.r ) targetname "rung1"}
+
+$ladder1 maxoffset 0
+$ladder1 tileshader "textures/barrel/blackbarrel"
+$ladder1 scale 2
+$ladder1 doactivate
+
+$rung1 maxoffset 0
+$rung1 tileshader "textures/barrel/blackbarrel"
+$rung1 scale 1
+$rung1 doactivate
+
+while(1)
+{for(local.p=1;local.p<=$player.size;local.p++)
+      {if($player[local.p] isTouching $ladderbrush2 && $player[local.p].origin[2] != $player[local.p].ladder) 
+         {$player[local.p].ladder = $player[local.p].origin[2]
+           $player[local.p] playsound snd_step_metal1}}
+wait .5} 
+end
+
+//**********************MODS*****************************
+EnlightModThread:
+while (1)
+{
+	wait .2                                                                          // Infinite Loop Error Removal
+	for (local.i = 1; local.i < ($player.size + 1); local.i++)
+	{
+		local.player = $player[local.i]
+		if (local.player != NIL && local.player.dmteam != "spectator")
+		{
+			if ( getcvar (g_gametype) == "1")
+					local.player light 0 0 1 150                            // Free For All, All Players Blue
+			else
+			{
+				if (local.player.dmteam == "allies")
+						local.player light 0 1 1 150                        // Allies light green
+				else
+						local.player light 1 0 0 150                        // Nazi Flag is Red, so axis are too
+			}
+
+		}
+		else
+		{
+			local.player light 0 0 0 0		
+		}
+		// Possible glitch: selecting team but not weapon = Spectator with Spotlight
+	}
+}
+end
+

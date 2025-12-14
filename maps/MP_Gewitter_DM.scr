@@ -1,0 +1,94 @@
+// **********************************************************************
+// Extended-Gametype Mapscript Version 1.2.1 (05-14-05)
+// By Mark Follett (Mefy)
+// email: mef123@geocities.com
+// web: www.planetmedalofhonor.com/mefy
+// You are free to modify and redistribute as long as you keep these
+// credits.
+// **********************************************************************
+// Credits to Kaotik for base positions
+
+main:
+
+// set scoreboard messages
+
+
+setcvar "g_scoreboardpic" "mp_gewitter_dm.tga"
+
+	switch (waitthread global/libmef/util.scr::get_gametype)
+	{
+		case "ctf":
+		case "ftctf":
+		case "dem":
+		case "ftdem":
+			waitthread setup_bases
+			break
+	}
+		
+	level.script = maps/dm/mp_gewitter_dm.scr
+	level.music = mp_gewitter_dm	
+	exec global/dmprecache.scr mp_gewitter_dm
+	exec global/weather.scr 
+	exec global/ambient.scr 
+	exec global/door_locked.scr
+
+	$granatwerfer.collisionent = $granatwerfer_collision
+	$granatwerfer_turret0.collisionent = $granatwerfer_turret_collision
+	
+	waitthread global/libmef/util.scr::read_gametype_settings
+
+	if (!level.mef_removeturrets)
+	{
+		$granatwerfer thread global/stationaryweapons.scr::MountedStationaryWeaponWithCollision "models/statweapons/p_granatwerfer_d.tik" $granatwerfer_destroyed_collision
+	}
+
+	level waitTill prespawn
+
+	level waittill spawn
+	thread EnlightModThread
+
+	$world farplane_bias 250
+
+
+
+
+end
+
+
+setup_bases:
+	// Base positions by Kaotik
+	waitthread global/libmef/bases.scr::addbasepair "2536.83 1395.68 144.13 180 Allied Manor" "-3936.87 963.85 256.13 0 Axis Manor"
+	waitthread global/libmef/bases.scr::addbasepair "1400.87 2399.72 8.13 180 NW Sector" "-2288.87 502.37 -5.36 0 SE Sector"
+end
+
+
+//-----------------------------------------------------------------------------
+//**********************MODS*****************************
+EnlightModThread:
+while (1)
+{
+	wait .2                                                                          // Infinite Loop Error Removal
+	for (local.i = 1; local.i < ($player.size + 1); local.i++)
+	{
+		local.player = $player[local.i]
+		if (local.player != NIL && local.player.dmteam != "spectator")
+		{
+			if ( getcvar (g_gametype) == "1")
+					local.player light 0 0 1 150                            // Free For All, All Players Blue
+			else
+			{
+				if (local.player.dmteam == "allies")
+						local.player light 0 1 1 150                        // Allies light green
+				else
+						local.player light 1 0 0 150                        // Nazi Flag is Red, so axis are too
+			}
+
+		}
+		else
+		{
+			local.player light 0 0 0 0		
+		}
+		// Possible glitch: selecting team but not weapon = Spectator with Spotlight
+	}
+}
+end

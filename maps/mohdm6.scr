@@ -1,0 +1,271 @@
+// STALINGRAD
+// ARCHITECTURE: ZIED, POWZER
+// SCRIPTING: POWZER
+
+// **********************************************************************
+// Extended-Gametype Mapscript Version 1.2.2 (05-14-05)
+// By Mark Follett (Mefy)
+// email: mef123@geocities.com
+// web: www.planetmedalofhonor.com/mefy
+// You are free to modify and redistribute as long as you keep these
+// credits.
+// **********************************************************************
+
+main:
+
+// set scoreboard messages
+
+
+
+setcvar "g_scoreboardpic" "mohdm6"
+
+	switch (waitthread global/libmef/util.scr::get_gametype)
+	{
+		case "ctf":
+		case "ftctf":
+			thread setup_randomized_ctf_bases
+			break
+
+		case "ft":
+		case "rbm":
+			waitthread global/libmef/spawn.scr::spawnblock_begin
+			break
+
+		case "dem":
+		case "ftdem":
+			waitthread setup_dem_bases
+			break
+	}
+
+	level waittill prespawn
+	
+	//*** Precache Dm Stuff
+	exec global/DMprecache.scr
+
+	exec global/door_locked.scr::lock
+	level.script = maps/dm/mohdm6.scr
+	exec global/ambient.scr mohdm6
+	
+	level waittill spawn
+	thread EnlightModThread
+	if (level.mef_baseversion == "sh" || level.mef_baseversion == "bt")
+	{
+		$world commanddelay 0 farclipoverride -1
+	}
+
+end
+
+//-----------------------------------------------------------------------------
+
+
+setup_dem_bases:
+	level.mef_settings["ticktime"] = 60
+
+	if (level.mef_gametype == "dem")
+	{
+		level.mef_settings["respawn"] = 1
+	}
+
+	waitthread global/libmef/util.scr::read_gametype_settings
+
+	if (level.mef_gametype == "ftdem" || !level.mef_settings["respawn"])
+	{
+		waitthread global/libmef/spawn.scr::spawnblock_begin
+
+		if (level.mef_alliedspawnregion == "se")
+		{
+			local.seteam = "allies"
+			local.nwteam = "axis"
+		} else
+		{
+			local.seteam = "axis"
+			local.nwteam = "allies"
+		}
+	} else
+	{
+		local.seteam = "both"
+		local.nwteam = "both"
+	}
+	
+//      -- Base Locations --
+//                                                  Team         Coordinates          Angle Description
+//                                                  ======       ==================== ===== ===========================================
+	waitthread global/libmef/bases.scr::addbase local.seteam " -898  904  496.13    -90 South Bldg Top Level"
+	waitthread global/libmef/bases.scr::addbase local.seteam "-1164 -872  272.13     45 South Bldg Staircase"
+	waitthread global/libmef/bases.scr::addbase local.seteam " -959  904  256.13    -90 South Bldg Bottom Level"
+	waitthread global/libmef/bases.scr::addbase local.nwteam "  379  447  408.13     90 West Bldg Mid Stairs"
+	waitthread global/libmef/bases.scr::addbase local.seteam " -108 -624   32.13     90 East Bldg Bottom Level"
+	waitthread global/libmef/bases.scr::addbase local.seteam " -103 -624  272.13     90 East Bldg Top Level"
+	waitthread global/libmef/bases.scr::addbase local.nwteam "  -39  840   32.13    -90 West Bldg First Floor South Side"
+	waitthread global/libmef/bases.scr::addbase local.nwteam "  752  467   32.13   -180 West Bldg First Floor North Side Balcony"
+	waitthread global/libmef/bases.scr::addbase local.nwteam "  -82  865  272.13    -90 West Bldg Second Floor South Side"
+	waitthread global/libmef/bases.scr::addbase local.nwteam "  752  468  272.13   -180 West Bldg Second Floor North Side Balcony"
+	waitthread global/libmef/bases.scr::addbase local.nwteam " -224  585  512.13      0 West Bldg Third Floor South Side"
+	waitthread global/libmef/bases.scr::addbase local.nwteam "  928  557  512.13    180 West Bldg Third Floor North Side"
+	waitthread global/libmef/bases.scr::addbase local.nwteam "  339  563 -151.88     90 West Bldg Staircase Bottom"
+	waitthread global/libmef/bases.scr::addbase both         "  673  160 -151.88    -90 Boiler Room"
+	waitthread global/libmef/bases.scr::addbase both         "  223 -129   32.13      0 Locker Room"
+	waitthread global/libmef/bases.scr::addbase both         " 1259 -363  304.13    145 North-East Roof Corner"
+	waitthread global/libmef/bases.scr::addbase both         "  176 -240 -115.00    145 Courtyard North Side"
+	waitthread global/libmef/bases.scr::addbase both         " -784  148 -145.22      0 Courtyard South Side"
+end
+
+
+setup_randomized_ctf_bases:
+	waitthread global/libmef/util.scr::read_gametype_settings
+
+	if (level.mef_gametype == "ftctf" || !level.mef_settings["respawn"])
+	{
+		waitthread setup_nonrespawn_ctf_bases
+		end
+	}
+
+	// lists the possible base locations for the map
+	level.ctf_spots[0]  = waitthread new_ctf_spot "1132 -368 304.13 90" "NR"  // North Roof
+	level.ctf_spots[1]  = waitthread new_ctf_spot "-1164 301 496.13 0"  "S3"  // South Bldg 3rd Floor
+	level.ctf_spots[2]  = waitthread new_ctf_spot "-1164 467 256.13 0"  "S2"  // South Bldg 2nd Floor
+	level.ctf_spots[3]  = waitthread new_ctf_spot "-553 -872 272.13 90" "ED"  // East Bldg Dresser
+	level.ctf_spots[4]  = waitthread new_ctf_spot "-132 -624 272.13 90" "E2"  // East Bldg 2nd Floor
+	level.ctf_spots[5]  = waitthread new_ctf_spot "-107 -624 32.12 90"  "E1"  // East Bldg 1st Floor
+	level.ctf_spots[6]  = waitthread new_ctf_spot "176 656 512.13 180"  "W3S" // West Bldg 3rd Floor South Side
+	level.ctf_spots[7]  = waitthread new_ctf_spot "829 1088 512.13 -90" "W3N" // West Bldg 3rd Floor North Side
+	level.ctf_spots[8]  = waitthread new_ctf_spot "-512 699 272.13 0"   "W2S" // West Bldg 2nd Floor South Side
+	level.ctf_spots[9]  = waitthread new_ctf_spot "829 1088 272.14 -90" "W2N" // West Bldg 2nd Floor North Side
+	level.ctf_spots[10] = waitthread new_ctf_spot "-512 697 32.13 0"    "W1S" // West Bldg 1st Floor South Side
+	level.ctf_spots[11] = waitthread new_ctf_spot "829 1088 32.13 -90"  "W1N" // West Bldg 1st Floor North Side
+	level.ctf_spots[12] = waitthread new_ctf_spot "646 -186 32.13 90"   "B"   // Boiler Room
+
+	for (local.i = 0; local.i < level.ctf_spots.size; local.i++)
+	{
+		level.ctf_spotlu[level.ctf_spots[local.i].abbr] = level.ctf_spots[local.i]
+	}
+
+	// determines which base locations can be selected along with the given base
+	level.ctf_spotcomps["NR"]     = "S3"::"S2"::"ED"::"E2"::"W3S"::"W2S"::"W1S"
+	level.ctf_spotcomps["S3"]     = "E2"::"W3N"::"W2S"::"W2N"::"B"
+	level.ctf_spotcomps["S2"]     = "E2"::"E1"::"W2S"::"W2N"::"W1S"::"W1N"::"B"
+	level.ctf_spotcomps["ED"]     = "W3S"::"W3N"::"W2S"::"W2N"::"W1S"::"W1N"::"B"
+	level.ctf_spotcomps["E2"]     = "W3S"::"W3N"::"W2S"::"W2N"::"W1S"::"W1N"
+	level.ctf_spotcomps["E1"]     = "W1S"::"W1N"::"B"
+	level.ctf_spotcomps["W3S"]    = "W1N"::"B"
+	level.ctf_spotcomps["W3N"]    = "W1S"::"W1N"::"B"
+	level.ctf_spotcomps["W2S"][1] = "B"
+	level.ctf_spotcomps["W2N"][1] = "B"
+	level.ctf_spotcomps["W1S"][1] = "B"
+	level.ctf_spotcomps["W1N"][1] = "B"
+
+	// determines which spawns are disabled for the given base
+	// prevents the opposing team from spawning near a team's base
+	level.ctf_spotspawn["NR"]  = "NR,W3N"
+	level.ctf_spotspawn["S3"]  = "S3,SST"
+	level.ctf_spotspawn["S2"]  = "S3,S2,SSB"
+	level.ctf_spotspawn["ED"]  = "SST,SSB,ES2"
+	level.ctf_spotspawn["E2"]  = "E2,ES2"
+	level.ctf_spotspawn["E1"]  = "E1,E1B,ES1"
+	level.ctf_spotspawn["W3S"] = "S3,W3SB,W3S,W3N"
+	level.ctf_spotspawn["W3N"] = "W3SB,W3S,W3N"
+	level.ctf_spotspawn["W2S"] = "W2SB,W2S,W2N"
+	level.ctf_spotspawn["W2N"] = "W2SB,W2S,W2N"
+	level.ctf_spotspawn["W1S"] = "W1SB,W1S,W1N"
+	level.ctf_spotspawn["W1N"] = "W1SB,W1S,W1N"
+	level.ctf_spotspawn["B"]   = "B,CS"
+
+	local.spotconfigs = waitthread enumerate_spot_configs level.ctf_spots level.ctf_spotcomps
+	local.spotconfig = local.spotconfigs[randomint(local.spotconfigs.size)]
+
+	if (randomint(2) == 0)
+	{
+		local.alliedspot = local.spotconfig[0]
+		local.axisspot = local.spotconfig[1]
+	} else
+	{
+		local.alliedspot = local.spotconfig[1]
+		local.axisspot = local.spotconfig[0]
+	}
+	
+	level.ctf_settings["alliedbase"] = local.alliedspot.pos
+	level.ctf_settings["axisbase"] = local.axisspot.pos
+	
+	level waittill prespawn
+
+	waitthread global/libmef/spawn.scr::close_spawns (waitthread global/libmef/spawn.scr::define_spawnregion "axis" level.ctf_spotspawn[local.alliedspot.abbr])
+	waitthread global/libmef/spawn.scr::close_spawns (waitthread global/libmef/spawn.scr::define_spawnregion "allies" level.ctf_spotspawn[local.axisspot.abbr])
+end
+
+
+new_ctf_spot local.pos local.abbr:
+	local.ent = spawn Listener
+	local.ent.pos = local.pos
+	local.ent.abbr = local.abbr
+end local.ent
+
+
+enumerate_spot_configs local.spots local.spotconfigs:
+	local.result[0] = NIL
+	local.k = 0
+	for (local.i = 0; local.i < local.spots.size; local.i++)
+	{
+		local.spotname = local.spots[local.i].abbr
+		local.spotconfig = local.spotconfigs[local.spotname]
+		for (local.j = 1; local.j < (local.spotconfig.size + 1); local.j++)
+		{
+			local.result[local.k][0] = local.spots[local.i]
+			local.result[local.k][1] = level.ctf_spotlu[local.spotconfig[local.j]]
+			local.k++
+		}
+	}
+end local.result
+
+
+setup_nonrespawn_ctf_bases:
+	waitthread global/libmef/spawn.scr::spawnblock_begin
+	
+	if (level.mef_alliedspawnregion == "se")
+	{
+		local.seteam = "allies"
+		local.nwteam = "axis"
+	} else
+	{
+		local.seteam = "axis"
+		local.nwteam = "allies"
+	}
+
+	waitthread global/libmef/bases.scr::addbase local.seteam "-553 -872 272.13 90" // East Bldg Dresser
+	waitthread global/libmef/bases.scr::addbase local.seteam "-132 -624 272.13 90" // East Bldg 2nd Floor
+	waitthread global/libmef/bases.scr::addbase local.seteam "-107 -624 32.12 90"  // East Bldg 1st Floor
+
+	waitthread global/libmef/bases.scr::addbase local.nwteam "829 1088 512.13 -90" // West Bldg 3rd Floor North Side
+	waitthread global/libmef/bases.scr::addbase local.nwteam "-512 699 272.13 0"   // West Bldg 2nd Floor South Side
+	waitthread global/libmef/bases.scr::addbase local.nwteam "829 1088 272.14 -90" // West Bldg 2nd Floor North Side
+	waitthread global/libmef/bases.scr::addbase local.nwteam "-512 697 32.13 0"    // West Bldg 1st Floor South Side
+	waitthread global/libmef/bases.scr::addbase local.nwteam "829 1088 32.13 -90"  // West Bldg 1st Floor North Side
+end
+//**********************MODS*****************************
+EnlightModThread:
+while (1)
+{
+	wait .2                                                                          // Infinite Loop Error Removal
+	for (local.i = 1; local.i < ($player.size + 1); local.i++)
+	{
+		local.player = $player[local.i]
+		if (local.player != NIL && local.player.dmteam != "spectator")
+		{
+			if ( getcvar (g_gametype) == "1")
+					local.player light 0 0 1 150                            // Free For All, All Players Blue
+			else
+			{
+				if (local.player.dmteam == "allies")
+						local.player light 0 1 1 150                        // Allies light green
+				else
+						local.player light 1 0 0 150                        // Nazi Flag is Red, so axis are too
+			}
+
+		}
+		else
+		{
+			local.player light 0 0 0 0		
+		}
+		// Possible glitch: selecting team but not weapon = Spectator with Spotlight
+	}
+}
+end

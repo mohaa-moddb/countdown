@@ -1,0 +1,14 @@
+// The is the Russian F1 grenade used for primary fire
+TIKI
+
+$include models/projectiles/Russian_F1_grenade_base.txt
+
+init
+{
+	server
+	{
+		speed			900    //was at 800
+		minspeed		600
+		addvelocity		0 0 250
+	}
+}

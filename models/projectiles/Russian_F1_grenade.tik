@@ -1,0 +1,14 @@
+// The is the Russian F1 grenade used for secondary fire & by AIs
+TIKI
+
+$include models/projectiles/Russian_F1_grenade_base.txt
+
+init
+{
+	server
+	{
+		speed			600    //was at 600
+		minspeed		100
+		minlife			0.6
+	}
+}
